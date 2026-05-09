@@ -1,16 +1,38 @@
 var table = null;
+var playerCounter = null;
 
-$("#add_player").on("click", function(){
-    let playerName = $('#player_input').val();
-    $('#player_input').val("");
-    let rowID = new Hashes.MD5().hex(Date.now().toString());
-    table.addRow({id: rowID, name: playerName, remove: "X"});
+function addPlayer(){
+    let player_entry = $('#player_input');
+    if (player_entry.val()){
+        table.addRow({name: player_entry.val(), remove: "X"});
+        player_entry.val("");
+        player_entry.focus();
+        updatePlayerCount();
+    }
+}
+
+$("#add_player").on("click", addPlayer);
+$("#player_input").on("keypress", function(e) {
+    if (e.which === 13) {
+        addPlayer();
+    }
 });
+
+$("#gen_round_one").on("click", generateJSON)
 
 function removePlayer(e, cell) {
     table.deleteRow(cell.getRow());
+    updatePlayerCount();
 }
 
+function updatePlayerCount(){
+    playerCounter.text(table.getRows().length);
+}
+
+function generateJSON(){
+    var rows = table.getRows();
+    rows.forEach((row) => {var name = row.getCell("name").getValue(); console.log(name)})
+}
 
 $(document).ready(function(){
     table = new Tabulator("#players", {
@@ -21,4 +43,8 @@ $(document).ready(function(){
             {title:"Remove", field:"remove", hozAlign:"center", cellClick:removePlayer}
         ],
     });
+
+    playerCounter = $("#player_count");
+
+
 });
