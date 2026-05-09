@@ -2,7 +2,8 @@
 <html>
     <head>
         <title>MTG Swiss Tournament</title>
-        <link rel="stylesheet" href="main.css" />
+        <link rel="stylesheet" href="assets/css/main.css" />
+        <link rel="stylesheet" href="assets/css/tabulator.min.css" />
         <meta charset="utf-8">
     </head>
     <body>
@@ -10,24 +11,26 @@
         <div id="input_div">
             Player Name: 
             <input type="text" id="player_input"/>
-            <button id="add_player" onclick="addPlayer()"> Add Player </button>
+            <button id="add_player"> Add Player </button>
         </div>
 
+        <br/>
         
         <!-- Table to display currently added players and manage (remove) -->
         <table id="players">
-            <tr>
+            <!-- <tr>
                 <th>Player</th>
                 <th>Manage</th>
-            </tr>
+            </tr> -->
         </table>
 
         
 
         <!--Scripts-->
-        <script src="assets/jquery.min.js"></script>
-        <script src="assets/hashes.min.js"></script>
-        <script src="assets/manage_players.js"></script>
+        <script src="assets/JS/jquery.min.js"></script>
+        <script src="assets/JS/hashes.min.js"></script>
+        <script src="assets/JS/tabulator.min.js"></script>
+        <script src="assets/JS/manage_players.js"></script>
         <!-- <script src="assets/bracket_gen.js"></script>
         <script src="assets/run_bracket.js"></script> -->
     </body>

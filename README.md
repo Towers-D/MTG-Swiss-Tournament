@@ -2,4 +2,10 @@
 
 
 # Acknowledgements
-jshashes library: [https://github.com/h2non/jshashes/blob/master/LICENSE](https://github.com/h2non/jshashes/blob/master/LICENSE)
+Find below a list of libraries and resources used to build this tool.
+
+## Libraries Used
+| Libary   | Link                                                                                             |
+|----------|--------------------------------------------------------------------------------------------------|
+|jshashes  | [https://github.com/h2non/jshashes/blob/master/](https://github.com/h2non/jshashes/blob/master/) |
+|tabulator | [https://tabulator.info](https://tabulator.info)                                                 |
