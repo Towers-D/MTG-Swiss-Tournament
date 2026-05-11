@@ -17,7 +17,7 @@ const TABLE:Tabulator = new Tabulator("#players", {
 function addPlayer(): void {
     let player_entry:HTMLInputElement = document.getElementById("player_input") as HTMLInputElement;
     let value:string = player_entry.value;
-    if (value.length === 0) {
+    if (value.length !== 0) {
         TABLE.addRow({name: sanitise(value), remove: "X"});
         player_entry.value = "";
         player_entry.focus();
