@@ -1,8 +1,7 @@
 import { TabulatorFull as Tabulator } from "tabulator-tables";
-import { $, jQuery } from 'jquery';
+import { $ } from 'jquery';
 import "tabulator-tables/dist/css/tabulator.min.css";
 
-const PLAYER_COUNTER:JQuery<HTMLDivElement> = $("#player_Count");
 const TABLE:Tabulator = new Tabulator("#players", {
     responsiveLayout: true,
     height:"311px",
@@ -12,6 +11,10 @@ const TABLE:Tabulator = new Tabulator("#players", {
     ],
 });
 
+
+/**
+ * Adds a player to the players table, then
+ */
 function addPlayer(): void {
     let player_entry:JQuery<HTMLInputElement> = $("#player_input");
     if (player_entry.val()) {
@@ -22,24 +25,41 @@ function addPlayer(): void {
     }
 }
 
-function updatePlayerCount(): void {
-    PLAYER_COUNTER.text(TABLE.getRows().length);
+/**
+ * Removes a player from the players table, then updates count
+ */
+function removePlayer(e, cell): void {
+    TABLE.deleteRow(cell.getRow());
+    updatePlayerCount();
 }
 
-$("#add_player").on("click", addPlayer);
+/**
+ * Called when adding or removing players from the table, changes the value of the `$('#player_count)`
+ */
+function updatePlayerCount(): void {
+    $("#player_Count").text(TABLE.getRows().length);
+}
 
+
+// Bind adding players to clicking the `$('#add_player')` button and hitting enter when in the `$('#player_input')` textbox
+$("#add_player").on("click", addPlayer);
 $("#player_input").on("keypress", function(e) {
     if (e.which === 13) {
         addPlayer();
     }
 });
 
-function removePlayer(e, cell): void {
-    TABLE.deleteRow(cell.getRow());
-    updatePlayerCount();
-}
 
-// Modified from Matt Hyde here: https://stackoverflow.com/a/48226843
+// 
+/**
+ * Santises an input string from special characters.
+ * 
+ * @remarks
+ * Modified from Matt Hyde here: {@link https://stackoverflow.com/a/48226843}
+ * 
+ * @param input - A string to be sanitised.
+ * @returns `input` with the special characters [&, <, >, ", ', /, `, ;] replaced/removed.
+ */
 function sanitise(input:string): string {
     const MAP:Map<string, string> = new Map();
     MAP.set('&', '&amp;');
