@@ -1,5 +1,4 @@
 import { TabulatorFull as Tabulator } from "tabulator-tables";
-import { $ } from 'jquery';
 import "tabulator-tables/dist/css/tabulator.min.css";
 
 const TABLE:Tabulator = new Tabulator("#players", {
@@ -16,11 +15,12 @@ const TABLE:Tabulator = new Tabulator("#players", {
  * Adds a player to the players table, then
  */
 function addPlayer(): void {
-    let player_entry:JQuery<HTMLInputElement> = $("#player_input");
-    if (player_entry.val()) {
-        TABLE.addRow({name: sanitise(player_entry.val() as string), remove: "X"});
-        player_entry.val("");
-        player_entry.trigger("focus");
+    let player_entry:HTMLInputElement = document.getElementById("player_input") as HTMLInputElement;
+    let value:string = player_entry.value;
+    if (value.length === 0) {
+        TABLE.addRow({name: sanitise(value), remove: "X"});
+        player_entry.value = "";
+        player_entry.focus();
         updatePlayerCount();
     }
 }
@@ -34,17 +34,17 @@ function removePlayer(e, cell): void {
 }
 
 /**
- * Called when adding or removing players from the table, changes the value of the `$('#player_count)`
+ * Called when adding or removing players from the table, changes the value of the player_count div.
  */
 function updatePlayerCount(): void {
-    $("#player_Count").text(TABLE.getRows().length);
+    (document.getElementById('player_count') as HTMLDivElement).textContent = TABLE.getRows().length;
 }
 
 
-// Bind adding players to clicking the `$('#add_player')` button and hitting enter when in the `$('#player_input')` textbox
-$("#add_player").on("click", addPlayer);
-$("#player_input").on("keypress", function(e) {
-    if (e.which === 13) {
+// Bind adding players to clicking the add_player button and hitting enter when in the player_input textbox
+(document.getElementById('add_player') as HTMLButtonElement).addEventListener("click", addPlayer);
+(document.getElementById('player_input') as HTMLInputElement).addEventListener("keypress", function(e) {
+    if (e.key === "Enter") {
         addPlayer();
     }
 });

@@ -30,6 +30,5 @@ Find below a list of libraries and resources used to build this tool.
 | Node       | [https://nodejs.org/en](https://nodejs.org/en)                   |
 | Vite       | [https://vite.dev](https://vite.dev)                             |
 | Yarn       | [https://yarnpkg.com](https://yarnpkg.com)                       |
-| JQuery     | [https://jquery.com](https://jquery.com)                         |
 | TypeScript | [https://www.typescriptlang.org](https://www.typescriptlang.org) |
 | tabulator  | [https://tabulator.info](https://tabulator.info)                 |
