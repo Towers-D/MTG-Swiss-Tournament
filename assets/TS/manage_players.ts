@@ -49,7 +49,8 @@ function sanitise(input:string): string {
     MAP.set("'", '&#x27;');
     MAP.set('/', '&#x2F;');
     MAP.set('`', '&grave;');
+    MAP.set(';', "");
 
-    const REG:RegExp = /[&<>"'/`]/ig;
+    const REG:RegExp = /[&<>"'/;`]/ig;
     return input.replace(REG, (match) => MAP.get(match) as string);
 }
