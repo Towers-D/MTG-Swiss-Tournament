@@ -1,7 +1,7 @@
 # MTG Swiss Tournament Tool
 
+## Licence
 
-# Licence
 This work is released under a CC-BY-NC-SA 4.0 licence. In regards to this project and the interpretation of the application of this licence we make the following interpretations and assumptions.
 
 1. By Attribution: In order to fulfill the by attribution, we require a link to the repository clearly visible and labeled.
@@ -10,11 +10,26 @@ This work is released under a CC-BY-NC-SA 4.0 licence. In regards to this projec
     - This does not prevent the use of the tool at tournaments regardless of entry fee.
 3. Share-Alike: These additional interpretations are also attributable to derivations.
 
-# Acknowledgements
+## Acknowledgements
+
 Find below a list of libraries and resources used to build this tool.
 
-## Libraries Used
-| Libary   | Link                                                                                             |
-|----------|--------------------------------------------------------------------------------------------------|
-|jshashes  | [https://github.com/h2non/jshashes/blob/master/](https://github.com/h2non/jshashes/blob/master/) |
-|tabulator | [https://tabulator.info](https://tabulator.info)                                                 |
+### Resources Used
+
+### Code Snippets Used
+
+| Function   | Locations           | Desc                    | Author    | Link                                                                         |
+|------------|---------------------|-------------------------|-----------|------------------------------------------------------------------------------|
+| `sanitise` | `manage_players.ts` | Input santisation code. | Matt Hyde | [https://stackoverflow.com/a/48226843](https://stackoverflow.com/a/48226843) |
+
+### Libraries & Tools Used
+
+| Libary     | Link                                                             |
+|------------|------------------------------------------------------------------|
+| NVM        | [https://github.com/nvm-sh/nvm](https://github.com/nvm-sh/nvm)   |
+| Node       | [https://nodejs.org/en](https://nodejs.org/en)                   |
+| Vite       | [https://vite.dev](https://vite.dev)                             |
+| Yarn       | [https://yarnpkg.com](https://yarnpkg.com)                       |
+| JQuery     | [https://jquery.com](https://jquery.com)                         |
+| TypeScript | [https://www.typescriptlang.org](https://www.typescriptlang.org) |
+| tabulator  | [https://tabulator.info](https://tabulator.info)                 |
