@@ -12,7 +12,7 @@ const TABLE:Tabulator = new Tabulator("#players", {
     ],
 });
 
-function addPlayer() {
+function addPlayer(): void {
     let player_entry:JQuery<HTMLInputElement> = $("#player_input");
     if (player_entry.val()) {
         TABLE.addRow({name: sanitise(player_entry.val() as string), remove: "X"});
@@ -22,7 +22,7 @@ function addPlayer() {
     }
 }
 
-function updatePlayerCount() {
+function updatePlayerCount(): void {
     PLAYER_COUNTER.text(TABLE.getRows().length);
 }
 
@@ -34,13 +34,13 @@ $("#player_input").on("keypress", function(e) {
     }
 });
 
-function removePlayer(e, cell) {
+function removePlayer(e, cell): void {
     TABLE.deleteRow(cell.getRow());
     updatePlayerCount();
 }
 
 // Modified from Matt Hyde here: https://stackoverflow.com/a/48226843
-function sanitise(input:string) {
+function sanitise(input:string): string {
     const MAP:Map<string, string> = new Map();
     MAP.set('&', '&amp;');
     MAP.set('<', '&lt;');
