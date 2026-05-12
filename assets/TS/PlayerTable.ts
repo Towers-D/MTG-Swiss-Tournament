@@ -1,5 +1,6 @@
 import { TabulatorFull as Tabulator } from "tabulator-tables";
-import "tabulator-tables/dist/css/tabulator.min.css";import { sanitise } from "./utils.ts";
+import "tabulator-tables/dist/css/tabulator.min.css";
+import { sanitise } from "./utils.ts";
 
 /**
  * Contains the code for generating and managing the players table for the buildevent page.
@@ -13,7 +14,7 @@ import "tabulator-tables/dist/css/tabulator.min.css";import { sanitise } from ".
  * @param buttonID - the ID of the button to add players when using a mouse or touchscreen. The ID must belong to a `button`.
  * @param counterID - the ID of the div containing which will track the number of players. The ID must belong to a `div`.
  */
-class PlayerTable {
+export class PlayerTable {
     table: Tabulator;
     playerInput: HTMLInputElement;
     button: HTMLButtonElement;
@@ -83,7 +84,3 @@ class PlayerTable {
         this.playerCounter.textContent = this.table.getRows().length;
     }
 }
-
-document.addEventListener("DOMContentLoaded", () =>{
-    let playerTable = new PlayerTable("players", "player_input", "add_player", "player_count");
-});
