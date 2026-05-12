@@ -1,8 +1,8 @@
-import { checkExpired, createJSON } from "./Json.ts";
+import {createJSON, isData } from "./Json.ts";
 import { PlayerTable } from "./PlayerTable.ts";
 
 document.addEventListener("DOMContentLoaded", () =>{
-    if (checkExpired() === false) {
+    if (isData() === true) {
         window.location.replace("/");
     }
 

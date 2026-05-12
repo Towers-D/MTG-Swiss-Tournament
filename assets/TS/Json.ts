@@ -26,21 +26,25 @@ export function createJSON(playerRows:Array<RowComponent>):void  {
     localStorage.setItem(JSON_STRING, JSON.stringify(json));
 };
 
+export function deleteJSON():void {
+    localStorage.removeItem(JSON_STRING);
+}
+
 /**
  * Checks if the stored data exceeds the lifespan it was created with and if so deletes it.
  * 
  * @returns `null` when no localStorage is found. Otherwise return whether the data was removed. 
  */
-export function checkExpired():boolean|null {
+function checkExpired(data:Json):boolean {
+    if (Date.now() > data.lifespan) {
+        deleteJSON();
+        return true;
+    }
+    return false;
+}
+
+export function isData():boolean {
     const raw = localStorage.getItem(JSON_STRING);
     const data:Json|null = raw ? JSON.parse(raw) : null;
-
-    if (data) {
-        if (Date.now() > data.lifespan) {
-            localStorage.removeItem(JSON_STRING);
-            return true;
-        }
-        return false;
-    }
-    return null;
+    return data ? !checkExpired(data) : false;
 }
