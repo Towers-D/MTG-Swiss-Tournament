@@ -14,13 +14,20 @@ export function createJSON(playerRows:Array<RowComponent>):void  {
     json.lifespan = Date.now() + 12 * 1000 * 60 * 60; // make nicer
     json.players = {};
 
+    var counter = 0;
+
     playerRows.forEach(row => {
         const data = row.getData() as {
             name: string;
             remove: string;
         }
 
-        json.players[data.name] = {};
+        json.players[counter++] = {
+            name: data.name,
+            matches: {
+
+            }
+        };
     });
 
     localStorage.setItem(JSON_STRING, JSON.stringify(json));
@@ -47,4 +54,13 @@ export function isData():boolean {
     const raw = localStorage.getItem(JSON_STRING);
     const data:Json|null = raw ? JSON.parse(raw) : null;
     return data ? !checkExpired(data) : false;
+}
+
+export function retrieveJSON():Json|null {
+    if(isData()) {
+        const raw = localStorage.getItem(JSON_STRING) as string;
+        var data:Json = JSON.parse(raw);
+        return data;
+    }
+    return null;
 }

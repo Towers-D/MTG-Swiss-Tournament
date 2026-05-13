@@ -22,3 +22,19 @@ export function sanitise(input:string): string {
     const REG:RegExp = /[&<>"'/;`]/ig;
     return input.replace(REG, (match) => MAP.get(match) as string);
 }
+
+export function range(stop:number): Array<number>;
+export function range(start:number, stop:number): Array<number>;
+
+export function range(start:number, stop?:number): Array<number> {
+    if (stop === undefined) {
+        stop = start;
+        start = 0;
+    }
+    return Array.from({length: stop - start}, (_, i) => start + i);
+}
+
+export function shuffleArray(array:Array<any>) {
+    array.sort(() => Math.random() - 0.5);
+    return array;
+}
