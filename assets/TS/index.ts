@@ -24,7 +24,7 @@ class Button {
     }
 
     updateButtonState() {
-        this.button.disabled = this.isActive()
+        this.button.disabled = !this.isActive()
     }
 }
 
