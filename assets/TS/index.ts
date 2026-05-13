@@ -13,79 +13,44 @@ class Button {
         this.updateButtonState()
 
         this.button.addEventListener("click", () => {
-            if (this.getActive()) {
+            if (this.isActive()) {
                 func();
             }
         });
     }
 
-    private getActive():boolean {
+    private isActive():boolean {
         return this.inverse ? !isData(): isData();
     }
 
     updateButtonState() {
-        this.button.disabled = this.getActive()
+        this.button.disabled = this.isActive()
     }
 }
 
-// TODO convert functions below into Buttons, and find why to reset them after any button pressed.
-
-// Delete Data button
-function manageDeleteButton(dataExists:boolean): void {
-    var deletebutton:HTMLButtonElement = document.getElementById("delete") as HTMLButtonElement;
-
-    deletebutton.disabled = !dataExists;
-    deletebutton.addEventListener("click", () => {
-        deleteJSON();
+function resetButtons(buttons:Array<Button>): void{
+    buttons.forEach((button) => {
+        button.updateButtonState();
     });
 
-}
-
-// Continue Tournament button
-function manageContinuebutton(dataExists:boolean): void {
-    var continueButton:HTMLButtonElement = document.getElementById("continue") as HTMLButtonElement;
-
-    continueButton.disabled = !dataExists;
-    continueButton.addEventListener("click", () => {
-        window.location.assign("/round");
-    });
 }
 
 // TODO load JSON button
 
-// view standings
-function manageStandingsbutton(dataExists:boolean): void {
-    var standingsButton:HTMLButtonElement = document.getElementById("standings") as HTMLButtonElement;
-
-    standingsButton.disabled = !dataExists;
-    standingsButton.addEventListener("click", () => {
-        window.location.assign("/round");
-    });
-}
-
-// Create Tournament
-function manageCreatebutton(dataExists:boolean): void {
-    var createButton:HTMLButtonElement = document.getElementById("create") as HTMLButtonElement;
-
-    createButton.disabled = dataExists;
-    createButton.addEventListener("click", () => {
-        window.location.assign("/lobby");
-    });
-}
-
-function resetButtons(){
-    var dataExists = isData();
-
-}
-
-function setButtons(dataExists:boolean): void {
-    manageDeleteButton(dataExists);
-    manageContinuebutton(dataExists);
-    manageStandingsbutton(dataExists);
-    manageCreatebutton(dataExists);
-}
 
 document.addEventListener("DOMContentLoaded", () =>{
-    var dataExists = isData();
-    setButtons(dataExists);
+    var deleteButton = new Button(deleteJSON, "delete");
+    var continueButton = new Button(() => {window.location.assign('/round')}, "continue");
+    var standingsButton = new Button(() => {window.location.assign('/standings')}, "standings");
+    var createButton = new Button(() => {window.location.assign('/lobby')}, "create", true);
+
+    var buttons:Array<Button> = [deleteButton, continueButton, standingsButton, createButton];
+
+    const htmlButtons = document.querySelectorAll("button");
+
+    htmlButtons.forEach((htmlButton) => {
+        htmlButton.addEventListener("click", () => {
+            resetButtons(buttons);
+        });
+    });
 });
