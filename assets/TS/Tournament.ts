@@ -1,33 +1,22 @@
 import { Json } from "./Json";
-import { ByeMatch, Match, PlayerMatch } from "./Match";
+import { ByeMatch, LateMatch, Match, miscPairing, PlayerMatch } from "./Match";
+import { MatchResult } from "./MatchResult";
 import { Player } from "./Player"
 import { range, shuffleArray } from "./utils"
-
-enum miscPairing {
-    BYE = -1,
-    LATE = -2
-}
-
-type Pairing = {
-    playerOneID: number,
-    playerTwoID: number
-}
-
-type Round = {
-    matches: Array<Match>;
-}
 
 class Tournament {
     players: Map<number, Player>;
     currentRound: number;
+    rounds: Array<Array<Match>>;
 
     constructor(players: Map<number, Player>, currentRound: number) {
         this.players = players;
         this.currentRound = currentRound;
+        this.rounds = new Array<Array<Match>>();
     }
 
-    private getPlayerFromID(id:number) {
-        return this.players[id];
+    private getPlayerFromID(id: number): Player {
+        return this.players.get(id) as Player;
     }
 
     static fromJson(json: Json): Tournament {
@@ -35,7 +24,7 @@ class Tournament {
         const players = new Map<number, Player>();
 
         Object.entries(json.players).forEach(([id, player]) => {
-            players[Number(id)] = Player.fromJson(player as Json);
+            players.set(Number(id), Player.fromJson(player as Json));
         });
 
         return new Tournament(players, round);
@@ -45,31 +34,40 @@ class Tournament {
         return this.players.size;
     }
 
-    advanceRound(): Round {
+    advanceRound(): void {
         if (++this.currentRound === 1) {
-            return this.generateRoundOne();
+            this.generateRoundOne();
         }
-        return this.generateRound();
+        this.generateRound();
     }
 
-    private generateRoundOne(): Round {
+    addLateEntry(playerName: string): void {
+        const ID = this.players.size;
+        this.players.set(ID, new Player(ID, playerName));
+        this.rounds[-1].push(new LateMatch(this.getPlayerFromID(ID)));
+
+        for (var i = 0; i < this.currentRound - 1; i++) {
+            this.getPlayerFromID(ID).addMatch(miscPairing.BYE, MatchResult.byeMatchResult());
+        }
+    }
+
+    private generateRoundOne(): void {
         var pairingSequence = shuffleArray(range(this.getNumPlayers()));
 
         const roundPairings = Array<Match>();
 
         if ((this.getNumPlayers() % 2) !== 0) {
-            const idOnBye = pairingSequence.pop()
-            roundPairings.push(new ByeMatch(this.getPlayerFromID(idOnBye)));
+            roundPairings.push(new ByeMatch(this.getPlayerFromID(pairingSequence.pop())));
         }
 
         for (var i = 0; i < roundPairings.length; i += 2) {
-            roundPairings.push(new PlayerMatch(this.getPlayerFromID(pairingSequence[i]), this.getPlayerFromID[i+1]));
+            roundPairings.push(new PlayerMatch(this.getPlayerFromID(pairingSequence[i]), this.getPlayerFromID(pairingSequence[i + 1])));
         }
 
-        return ({ matches: roundPairings } as Round);
+        this.rounds.push(roundPairings);
     }
 
-    private generateRound(): Round {
-        return ({ matches: new Array<Match>() } as Round);
+    private generateRound(): void {
+        console.log("hi");
     }
 }

@@ -2,21 +2,24 @@ import { Json } from "./Json.ts"
 import { MatchResult } from "./MatchResult.ts";
 
 export class Player {
-    private id: number
+    private readonly ID: number
     name: string;
     matches: Json;
 
-    constructor(name: string, matches: Json) {
+    constructor(id: number, name: string) {
+        this.ID = id;
         this.name = name;
-        this.matches = matches;
-    }
-
-    getID(): number {
-        return this.id;
+        this.matches = {};
     }
 
     static fromJson(json: Json): Player {
+        const ID = json.id;
+        
         return new Player(json.name, json.matches);
+    }
+
+    getID(): number {
+        return this.ID;
     }
 
     addMatch(oppID: number, matchResult: MatchResult) {

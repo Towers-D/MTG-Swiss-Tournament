@@ -1,13 +1,22 @@
 import { Player } from "./Player";
 import { MatchResult } from "./MatchResult";
 
+export enum miscPairing {
+    BYE = -1,
+    LATE = -2
+}
+
 export abstract class Match {
     playerOne: Player;
-
-    abstract scoreMatch(playerOneResult: MatchResult): void;
+    matchResult: MatchResult|null;
 
     constructor(playerOne: Player) {
         this.playerOne = playerOne;
+        this.matchResult = null;
+    }
+
+    protected setMatch(opID:number, matchResult:MatchResult){
+        this.playerOne.addMatch(opID, matchResult);
     }
 }
 
@@ -19,15 +28,14 @@ export class PlayerMatch extends Match {
         this.playerTwo = playerTwo;
     }
 
-    scoreMatch(playerOneResult:MatchResult): void {
-        this.playerOne.addMatch(this.playerTwo.getID(), playerOneResult);
-        this.playerTwo.addMatch(this.playerOne.getID(), playerOneResult.invert())
+    scoreMatch(result: MatchResult): void {
+        this.setMatch(this.playerTwo.getID(), result);
+        this.playerTwo.addMatch(this.playerOne.getID(), result.invert())
     }
 }
 
 abstract class SinglePlayerMatch extends Match {
     id: number;
-    matchResult: MatchResult;
 
     constructor(player:Player, id: number, matchResult:MatchResult ) {
         super(player)
@@ -35,19 +43,19 @@ abstract class SinglePlayerMatch extends Match {
         this.matchResult = matchResult;
     }
 
-    scoreMatch(playerOneResult:MatchResult = this.matchResult): void {
-        this.playerOne.addMatch(this.id, this.matchResult)
+    scoreMatch(): void {
+        this.setMatch(this.id, this.matchResult as MatchResult)
     }
 }
 
 export class ByeMatch extends SinglePlayerMatch {
     constructor(player:Player) {
-        super(player, -1, MatchResult.byeMatch());
+        super(player, miscPairing.BYE, MatchResult.byeMatchResult());
     }
 }
 
 export class LateMatch extends SinglePlayerMatch {
     constructor(player:Player) {
-        super(player, -2, MatchResult.lateMatch());
+        super(player, miscPairing.LATE, MatchResult.lateMatchResult());
     }
 }

@@ -7,11 +7,11 @@ export class MatchResult {
         this.LOSSES = losses;
     }
 
-    static byeMatch(){
+    static byeMatchResult(){
         return new MatchResult(2, 0);
     }
 
-    static lateMatch(){
+    static lateMatchResult(){
         return new MatchResult(0, 2);
     }
 
