@@ -44,6 +44,6 @@ Find below a list of libraries and resources used to build this tool.
 | Yarn       | [https://yarnpkg.com](https://yarnpkg.com)                       |
 | TypeScript | [https://www.typescriptlang.org](https://www.typescriptlang.org) |
 | tabulator  | [https://tabulator.info](https://tabulator.info)                 |
-| Svelte     | [https://svelte.dev](https://svelte.dev) |
-| RsDB       | []() |
-| Vitest | |
+| Svelte     | [https://svelte.dev](https://svelte.dev)                         |
+| RsDB       | [https://rxdb.info](https://rxdb.info)                           |
+| Vitest     | [https://vitest.dev](https://vitest.dev)                         |
