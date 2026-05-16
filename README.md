@@ -3,13 +3,35 @@
 ## Structure
 
 ```markdown
-src/
-├── db/
-├── routes/
-├── models/
-│   └── task.ts
-├── utils/
-│   └── date.ts
+src
++--main.ts
++--App.svelte
+|
++--db
+|  ---database.ts
+|
++--routes
+|  +--Home.svelte
+|  +--Lobby.svelte
+|  +--Round.svelte
+|  ---Scores.svelte
+|
++--css
+| +--main.css
+| |  ...
+| ---{Other CSS files}
+|
+---lib
+   +--home.ts
+   |  ...
+   +--{Other page TS files}
+   +--utils.ts
+   |
+   ---tests/
+      +--home.test.ts
+      |  ...
+      -{other test files }
+   
 ```
 
 ## Licence
