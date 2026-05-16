@@ -1,3 +1,4 @@
+import { DateTime } from "luxon";
 import { Json } from "./Json";
 import { ByeMatch, LateMatch, Match, miscPairing, PlayerMatch } from "./Match";
 import { MatchResult } from "./MatchResult";
@@ -15,19 +16,32 @@ class Tournament {
         this.rounds = new Array<Array<Match>>();
     }
 
-    private getPlayerFromID(id: number): Player {
-        return this.players.get(id) as Player;
-    }
-
     static fromJson(json: Json): Tournament {
         const round = json.round;
         const players = new Map<number, Player>();
 
         Object.entries(json.players).forEach(([id, player]) => {
-            players.set(Number(id), Player.fromJson(player as Json));
+            players.set(Number(id), Player.fromJson(Number(id), player as Json));
         });
 
         return new Tournament(players, round);
+    }
+
+    createJSON(): Json {
+        const json:Json ={};
+        json.round = this.currentRound;
+        json.lifespan = DateTime.now().plus({ days: 1 });
+        json.players = {};
+
+        this.players.forEach((player) => {
+            json.players[player.getID()] = player.createJSON();
+        });
+
+        return json;
+    }
+
+     private getPlayerFromID(id: number): Player {
+        return this.players.get(id) as Player;
     }
 
     getNumPlayers(): number {
@@ -47,7 +61,7 @@ class Tournament {
         this.rounds[-1].push(new LateMatch(this.getPlayerFromID(ID)));
 
         for (var i = 0; i < this.currentRound - 1; i++) {
-            this.getPlayerFromID(ID).addMatch(miscPairing.BYE, MatchResult.byeMatchResult());
+            this.getPlayerFromID(ID).addResult(miscPairing.BYE, MatchResult.byeMatchResult());
         }
     }
 

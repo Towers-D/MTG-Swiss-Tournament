@@ -1,5 +1,10 @@
-export type Json = { [key:string]: any};
 import { RowComponent } from "tabulator-tables";
+import { DateTime } from "luxon";
+
+
+export interface Json { 
+    key:string: any
+};
 
 const JSON_STRING:string = "tournamentJSON";
 
@@ -11,7 +16,7 @@ const JSON_STRING:string = "tournamentJSON";
 export function createJSON(playerRows:Array<RowComponent>):void  {
     const json:Json = {};
     json.round = 0;
-    json.lifespan = Date.now() + 12 * 1000 * 60 * 60; // make nicer
+    json.lifespan = DateTime.now().plus({ days: 1 }); // make nicer
     json.players = {};
 
     var counter = 0;

@@ -16,7 +16,7 @@ export abstract class Match {
     }
 
     protected setMatch(opID:number, matchResult:MatchResult){
-        this.playerOne.addMatch(opID, matchResult);
+        this.playerOne.addResult(opID, matchResult);
     }
 }
 
@@ -30,7 +30,7 @@ export class PlayerMatch extends Match {
 
     scoreMatch(result: MatchResult): void {
         this.setMatch(this.playerTwo.getID(), result);
-        this.playerTwo.addMatch(this.playerOne.getID(), result.invert())
+        this.playerTwo.addResult(this.playerOne.getID(), result.invert())
     }
 }
 

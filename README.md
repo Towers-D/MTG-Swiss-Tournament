@@ -1,5 +1,17 @@
 # MTG Swiss Tournament Tool
 
+## Structure
+
+```markdown
+src/
+├── db/
+├── routes/
+├── models/
+│   └── task.ts
+├── utils/
+│   └── date.ts
+```
+
 ## Licence
 
 This work is released under a CC-BY-NC-SA 4.0 licence. In regards to this project and the interpretation of the application of this licence we make the following interpretations and assumptions.
@@ -32,3 +44,6 @@ Find below a list of libraries and resources used to build this tool.
 | Yarn       | [https://yarnpkg.com](https://yarnpkg.com)                       |
 | TypeScript | [https://www.typescriptlang.org](https://www.typescriptlang.org) |
 | tabulator  | [https://tabulator.info](https://tabulator.info)                 |
+| Svelte     | [https://svelte.dev](https://svelte.dev) |
+| RsDB       | []() |
+| Vitest | |
