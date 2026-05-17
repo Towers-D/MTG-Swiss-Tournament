@@ -1,4 +1,5 @@
-import { isData } from "../db/database";
+import { deleteDatabase, isData, uploadJSON } from "../db/database";
+import { goToPage } from "./utils";
 
 function resetButtons(): void {
     const CONSOLE_BUTTONS = document.querySelectorAll<HTMLButtonElement>(".consoleButton");
@@ -8,22 +9,22 @@ function resetButtons(): void {
     })
 }
 
-function detectButtonPressed(event: MouseEvent) {
-    const target = event.target as HTMLElement;
+export function goToButton(page:string): void {
+    goToPage(page);
+    resetButtons();
+}
 
-    if (target.tagName === 'BUTTON') {
-        console.log('Button clicked');
-        resetButtons();
-    }
+export function jsonButton(): void {
+    uploadJSON();
+    resetButtons();
+}
+
+export function deleteButton(): void {
+    deleteDatabase()
+    resetButtons();
 }
 
 export function setUp() {
     document.title = "MTG Swiss Console";
-    
     resetButtons();
-
-    document.addEventListener("click", detectButtonPressed);
-    return () => {
-        document.removeEventListener('click', detectButtonPressed);
-    };
 }
