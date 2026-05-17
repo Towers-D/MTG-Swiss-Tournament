@@ -24,7 +24,7 @@ export function sanitise(input:string): string {
     return input.replace(REG, (match) => MAP.get(match) as string);
 }
 
-export function goToPage(page:string): void {
+export function goToPage(page:string = ''): void {
     push('/' + page);
 }
 
