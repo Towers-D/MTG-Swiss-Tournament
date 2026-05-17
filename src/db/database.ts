@@ -5,3 +5,7 @@ export function isData(): boolean{
 export function deleteDatabase(): void {
     console.log('deleted');
 }
+
+export function uploadJSON(): void {
+    console.log('JSON');
+}
