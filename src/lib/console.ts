@@ -18,6 +18,8 @@ function detectButtonPressed(event: MouseEvent) {
 }
 
 export function setUp() {
+    document.title = "MTG Swiss Console";
+    
     resetButtons();
 
     document.addEventListener("click", detectButtonPressed);
