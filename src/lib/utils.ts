@@ -1,4 +1,5 @@
-// 
+import { push } from 'svelte-spa-router';
+
 /**
  * Santises an input string from special characters.
  * 
@@ -21,6 +22,10 @@ export function sanitise(input:string): string {
 
     const REG:RegExp = /[&<>"'/;`]/ig;
     return input.replace(REG, (match) => MAP.get(match) as string);
+}
+
+export function goToPage(page:string): void {
+    push('/' + page);
 }
 
 export function range(stop:number): Array<number>;

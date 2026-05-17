@@ -1,5 +1,5 @@
-import { Json } from "./Json.ts"
-import { MatchResult } from "./MatchResult.ts";
+import { Json } from "./Json.js"
+import { MatchResult } from "./MatchResult.js";
 
 type Result = {
     opponentID:number,

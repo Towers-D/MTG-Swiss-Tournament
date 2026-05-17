@@ -1,5 +1,5 @@
-import {createJSON, isData } from "./Json.ts";
-import { PlayerTable } from "./PlayerTable.ts";
+import {createJSON, isData } from "./Json.js";
+import { PlayerTable } from "./PlayerTable.js";
 
 document.addEventListener("DOMContentLoaded", () =>{
     if (isData() === true) {

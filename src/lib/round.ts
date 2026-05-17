@@ -1,5 +1,5 @@
 import { retrieveJSON, isData, Json } from "./Json";
-import { range, shuffleArray } from "./utils.ts";
+import { range, shuffleArray } from "./utils";
 
 
 

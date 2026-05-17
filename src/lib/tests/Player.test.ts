@@ -1,6 +1,6 @@
 import {describe, expectTypeOf, expect, test} from 'vitest'
-import { Player } from '../TS/Player'
-import { Json } from '../TS/Json';
+import { Player } from '../Player'
+import { Json } from '../Json';
 
 const ID = 0;
 const NAME = 'bob';

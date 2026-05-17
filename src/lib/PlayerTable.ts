@@ -1,6 +1,6 @@
 import { TabulatorFull as Tabulator } from "tabulator-tables";
 import "tabulator-tables/dist/css/tabulator.min.css";
-import { sanitise } from "./utils.ts";
+import { sanitise } from "./utils.js";
 
 /**
  * Contains the code for generating and managing the players table for the buildevent page.
