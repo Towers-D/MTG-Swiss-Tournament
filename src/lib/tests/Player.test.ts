@@ -1,5 +1,5 @@
 import {describe, expectTypeOf, expect, test} from 'vitest'
-import { Player } from '../Player'
+import { Player } from '../old/Player'
 import { Json } from '../Json';
 
 const ID = 0;

@@ -3,7 +3,7 @@ import { Json } from "./Json";
 import { ByeMatch, LateMatch, Match, miscPairing, PlayerMatch } from "./Match";
 import { MatchResult } from "./MatchResult";
 import { Player } from "./Player"
-import { range, shuffleArray } from "./utils"
+import { range, shuffleArray } from "../utils"
 
 class Tournament {
     players: Map<number, Player>;
