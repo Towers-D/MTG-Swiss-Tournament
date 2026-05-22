@@ -27,7 +27,7 @@ export class PlayerTable {
     /**
      * Removes a player from the players table, then updates count
      * 
-     * @param e - tabulator event, required but not used.
+     * @param _event - tabulator event, required but not used.
      * @param cell - cell that triggered the function.
      */
     private removePlayer(_event:UIEvent, cell:CellComponent): void {
