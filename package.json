@@ -11,12 +11,11 @@
     "check": "svelte-check --tsconfig ./tsconfig.app.json && tsc -p tsconfig.node.json"
   },
   "dependencies": {
-    "@types/jquery": "^4.0.0",
-    "@types/node": "^25.6.2",
-    "codablejson": "^0.2.0",
+    "dexie": "^4.4.2",
     "luxon": "^3.7.2",
     "rsdb": "^1.0.0",
-    "svelte": "^5.55.7",
+    "rxdb": "^17.2.0",
+    "rxjs": "^7.8.2",
     "svelte-app-router": "^3.0.7",
     "svelte-spa-router": "^5.1.0",
     "tabulator-tables": "^6.4.0"
@@ -24,10 +23,11 @@
   "devDependencies": {
     "@sveltejs/vite-plugin-svelte": "^7.1.2",
     "@tsconfig/svelte": "^5.0.8",
-    "@types/node": "^24.12.3",
     "@types/luxon": "^3.7.1",
+    "@types/node": "^24.12.3",
     "@types/tabulator": "^0.1.2",
     "@types/tabulator-tables": "^6.3.3",
+    "ajv": "^8.20.0",
     "svelte": "^5.55.5",
     "svelte-check": "^4.4.8",
     "typescript": "~6.0.2",

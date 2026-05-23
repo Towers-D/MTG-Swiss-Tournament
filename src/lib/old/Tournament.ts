@@ -2,7 +2,7 @@ import { DateTime } from "luxon";
 import { Json } from "./Json";
 import { ByeMatch, LateMatch, Match, miscPairing, PlayerMatch } from "./Match";
 import { MatchResult } from "./MatchResult";
-import { Player } from "./Player"
+import { Player } from "./old-Player"
 import { range, shuffleArray } from "../utils"
 
 class Tournament {

@@ -1,4 +1,4 @@
-import { Player } from "./Player";
+import { Player } from "./old-Player";
 import { MatchResult } from "./MatchResult";
 
 export enum miscPairing {
