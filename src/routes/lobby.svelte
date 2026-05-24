@@ -4,6 +4,7 @@
     import { onMount } from "svelte";
     import PlayerTable from '../components/playerTable.svelte';
     import Database from "../db/database.svelte";
+    import { goToPage } from "../lib/utils";
 
     let tableComponent: PlayerTable;
     let playerInput: HTMLInputElement;
@@ -19,8 +20,10 @@
         tableComponent.addPlayer(playerInput);
     }
 
-    onMount(() => {
-        setUp();
+    onMount(async () => {
+        if (await database.dataExists()) {
+            goToPage()
+        }
     });
 </script>
 

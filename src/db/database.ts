@@ -1,4 +1,4 @@
-import { addRxPlugin, createRxDatabase, type RxDatabase } from 'rxdb';
+import { addRxPlugin, createRxDatabase, isRxCollection, type RxCollection, type RxDatabase } from 'rxdb';
 import { getRxStorageDexie } from 'rxdb/plugins/storage-dexie';
 
 //Player Collection
@@ -8,14 +8,6 @@ import { playerSchema } from './schemas/playerSchema';
 import { disableWarnings } from 'rxdb/plugins/dev-mode';
 import { wrappedValidateAjvStorage } from 'rxdb/plugins/validate-ajv';
 disableWarnings();
-
-export function isData(): boolean{
-    return false;
-}
-
-export function deleteDatabase(): void {
-    console.log('deleted');
-}
 
 export function uploadJSON(): void {
     console.log('JSON');
@@ -42,23 +34,19 @@ class Database {
             );
         }
         
-        const db = await createRxDatabase({
+        let db = await createRxDatabase({
             name: 'tournament',
             storage
         });
     
-        await db.addCollections({
-            players: {
-                schema: playerSchema
-            }
-        })
-    
+        db = await this.addEmpytCollections(db) as RxDatabase;
+
         return db;
     }
 
     async addPlayer(playerName: string): Promise<void> {
         const db = await this.getDB();
-        db.players.insert({
+        await db.players.insert({
             id: crypto.randomUUID(),
             name: playerName
         })
@@ -70,6 +58,41 @@ class Database {
 
         const players = docs.map(player => player.toJSON())
         return players;
+    }
+
+    async dataExists(): Promise<boolean> {
+        const collection:RxCollection = (await this.getDB()).players;
+        if (isRxCollection(collection)){
+            const count = await collection.count().exec()
+            if (count > 0) {
+                console.log(true)
+                return true;
+            }
+        }
+        console.log(false)
+        return false;
+    }
+
+    async deleteDatabase() {
+        const db = await this.getDB();
+        await db.players.remove();
+        await this.addEmpytCollections()
+    }
+
+    async addEmpytCollections(db:RxDatabase|null = null): Promise<RxDatabase|void> {
+        const dbExists:boolean = (db !== null);
+        if (!dbExists) {
+            db = await this.getDB()
+        }
+
+        await (db as RxDatabase).addCollections({
+            players: {
+                schema: playerSchema
+            }
+        })
+        if (dbExists) {
+            return db as RxDatabase;
+        }
     }
 }
 
