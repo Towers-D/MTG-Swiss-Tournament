@@ -11,8 +11,8 @@
         table = new PlayerTable(tableElement, playerCounter);
     });
 
-    export function addPlayer(playerInput:HTMLInputElement): void {
-        return table.addPlayer(playerInput);
+    export function addPlayer(playerName:string, UUID:string): void {
+        return table.addPlayer(playerName, UUID);
     }
 </script>
 

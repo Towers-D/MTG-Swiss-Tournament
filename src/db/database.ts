@@ -9,91 +9,99 @@ import { disableWarnings } from 'rxdb/plugins/dev-mode';
 import { wrappedValidateAjvStorage } from 'rxdb/plugins/validate-ajv';
 disableWarnings();
 
+if (import.meta.env.DEV) {
+    await import('rxdb/plugins/dev-mode').then(
+        module => addRxPlugin(module.RxDBDevModePlugin)
+    );
+}
+
 export function uploadJSON(): void {
     console.log('JSON');
 }
+let dbPromise: Promise<RxDatabase>|null = null;
 
-const storage = wrappedValidateAjvStorage({
-    storage: getRxStorageDexie()
-})
-
-class Database {
-    private dbPromise: Promise<RxDatabase> | null = null;
-
-    async getDB(): Promise<RxDatabase> {
-        if(!this.dbPromise) {
-            this.dbPromise = this.init();
-        }
-        return this.dbPromise;
+export async function getDB() {
+    if (!dbPromise) {
+        dbPromise = _create();
     }
+    return dbPromise;
+}
 
-    private async init(): Promise<RxDatabase>{
-        if (import.meta.env.DEV) {
-            await import('rxdb/plugins/dev-mode').then(
-                module => addRxPlugin(module.RxDBDevModePlugin)
-            );
-        }
-        
-        let db = await createRxDatabase({
-            name: 'tournament',
-            storage
-        });
-    
-        db = await this.addEmpytCollections(db) as RxDatabase;
-
-        return db;
-    }
-
-    async addPlayer(playerName: string): Promise<void> {
-        const db = await this.getDB();
-        await db.players.insert({
-            id: crypto.randomUUID(),
-            name: playerName
+const _create = async () => {
+    const db = await createRxDatabase({
+        name: 'tournament',
+        storage: wrappedValidateAjvStorage({
+            storage: getRxStorageDexie()
         })
-    }
+    });
 
-    async getPlayers() {
-        const db = await this.getDB();
-        const docs = await db.players.find().exec();
-
-        const players = docs.map(player => player.toJSON())
-        return players;
-    }
-
-    async dataExists(): Promise<boolean> {
-        const collection:RxCollection = (await this.getDB()).players;
-        if (isRxCollection(collection)){
-            const count = await collection.count().exec()
-            if (count > 0) {
-                console.log(true)
-                return true;
-            }
+    await db.addCollections({
+        players: {
+            schema: playerSchema
         }
-        console.log(false)
-        return false;
-    }
+    });
 
-    async deleteDatabase() {
-        const db = await this.getDB();
-        await db.players.remove();
-        await this.addEmpytCollections()
-    }
+    return db;
+}
 
-    async addEmpytCollections(db:RxDatabase|null = null): Promise<RxDatabase|void> {
-        const dbExists:boolean = (db !== null);
-        if (!dbExists) {
-            db = await this.getDB()
-        }
+export async function deleteDatabase() {
+    const db = await getDB();
+    const collections:Array<RxCollection> = await Object.values(db.collections);
 
-        await (db as RxDatabase).addCollections({
-            players: {
-                schema: playerSchema
-            }
-        })
-        if (dbExists) {
-            return db as RxDatabase;
-        }
+    for (const collection of collections) {
+        const docs = await collection.find().exec()
+        await Promise.all(
+            docs.map(doc => doc.remove())
+        )
     }
 }
 
-export const database = new Database();
+
+/**
+ * 
+ * @param playerName 
+ * @returns a `string` that is the players UUID for use of removal
+ */
+export async function addPlayer(playerName: string): Promise<string> {
+    const db = await getDB();
+    const UUID = crypto.randomUUID()
+    await db.players.insert({
+        id: UUID,
+        name: playerName
+    })
+    return UUID;
+}
+
+/**
+ * 
+ * @param playerID 
+ */
+export async function removePlayer(playerID:string): Promise<void> {
+    const db = await getDB();
+    const player = db.players.findOne(playerID);
+    if (player) {
+        await player.remove();
+    }
+}
+
+export async function getPlayers() {
+    const db = await getDB();
+    const docs = await db.players.find().exec();
+
+    const players = docs.map(player => player.toJSON())
+    return players;
+}
+
+export async function dataExists(): Promise<boolean> {
+    const db = await getDB();
+    const collections:Array<RxCollection> = await Object.values(db.collections);
+
+    for (const collection of collections) {
+        const count = await collection.count().exec()
+        if (count > 0) {
+            return true;
+        }
+    }
+    console.log(false)
+    return false;
+}

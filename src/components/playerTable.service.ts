@@ -1,7 +1,5 @@
-    import { TabulatorFull as Tabulator, type CellComponent } from "tabulator-tables";
-    import { sanitise } from "../lib/utils";
-
-    
+import { TabulatorFull as Tabulator, type CellComponent } from "tabulator-tables";
+import { removePlayer as removeFromDatabase } from "../db/database";
 
 export class PlayerTable {
     private table:Tabulator;
@@ -31,18 +29,19 @@ export class PlayerTable {
      * @param cell - cell that triggered the function.
      */
     private removePlayer(_event:UIEvent, cell:CellComponent): void {
+        const UUID = cell.getRow().getData().uuid;
+        removeFromDatabase(UUID);
         cell.getRow().delete();
         this.updatePlayerCount();
     }
 
-    addPlayer(playerInput:HTMLInputElement): void {
-        let name = playerInput.value;
-        if (name.length > 0) {
-            this.table.addRow({ name: sanitise(name), remove: "X" });
-            playerInput.value = "";
-            playerInput.focus();
-            this.updatePlayerCount();
-        }
+    addPlayer(playerName:string, UUID:string): void {
+        this.table.addRow({ 
+            name: playerName, 
+            uuid: UUID, 
+            remove: "X" 
+        });
+        this.updatePlayerCount();
     }
 
     getNumberOfPlayers(): number {
