@@ -1,6 +1,6 @@
 <script lang='ts'>
 
-import { setUp } from "../lib/lobby";
+import { setUpLobby } from "../lib/lobby";
 import { onMount } from "svelte";
 import PlayerTable from '../components/playerTable.svelte';
 
@@ -37,7 +37,7 @@ onMount(async () => {
     if (await dataExists()) {
         goToPage()
     }
-    setUp();
+    setUpLobby();
 });
 </script>
 

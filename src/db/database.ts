@@ -92,6 +92,15 @@ export async function getPlayers() {
     return players;
 }
 
+export async function getPlayerList() {
+    let players = await getPlayers();
+
+    if (players.length % 2 !== 0) { 
+        players.push({id: -1, name: "Bye"});
+    }
+    return players;
+}
+
 export async function dataExists(): Promise<boolean> {
     const db = await getDB();
     const collections:Array<RxCollection> = await Object.values(db.collections);
