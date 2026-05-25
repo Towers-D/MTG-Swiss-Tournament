@@ -25,6 +25,7 @@
 
 <div id='buttons'>
     <button id="create" disabled={hasData} class="consoleButton" on:click={() => goToButton("lobby")}> Open Lobby </button>
+    <!-- TODO continue should decide whether to go to creation or round based on the existence of the match -->
     <button id="continue" disabled={!hasData} class="consoleButton" on:click={() => goToButton("round")}> Continue Round </button>
     <button id="standings" disabled={!hasData} class="consoleButton" on:click={() => goToButton("standings")}> View Standings </button>
     <button id="upload" disabled={hasData} class="consoleButton" on:click={jsonButton}> Upload JSON </button>
