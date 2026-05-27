@@ -1,24 +1,28 @@
 import { addRxPlugin, createRxDatabase, isRxCollection, type RxCollection, type RxDatabase } from 'rxdb';
 import { getRxStorageDexie } from 'rxdb/plugins/storage-dexie';
 
+//Migration plugin for when schemas change
+import { RxDBMigrationSchemaPlugin } from 'rxdb/plugins/migration-schema';
+addRxPlugin(RxDBMigrationSchemaPlugin);
+
 //Player Collection
 import { playerSchema } from './schemas/playerSchema';
 
 //Get rid of annoying warning
 import { disableWarnings } from 'rxdb/plugins/dev-mode';
 import { wrappedValidateAjvStorage } from 'rxdb/plugins/validate-ajv';
+import { roundSchema } from './schemas/roundSchema';
+import { matchSchema } from './schemas/matchSchema';
+import { playerMigrations } from './migrations/playerMigrations';
+import { roundMigrations } from './migrations/roundMigrations';
+import { matchMigrations } from './migrations/matchMigrations';
 disableWarnings();
 
-if (import.meta.env.DEV) {
-    await import('rxdb/plugins/dev-mode').then(
-        module => addRxPlugin(module.RxDBDevModePlugin)
-    );
-}
 
 export function uploadJSON(): void {
     console.log('JSON');
 }
-let dbPromise: Promise<RxDatabase>|null = null;
+let dbPromise: Promise<RxDatabase> | null = null;
 
 export async function getDB() {
     if (!dbPromise) {
@@ -30,15 +34,22 @@ export async function getDB() {
 const _create = async () => {
     const db = await createRxDatabase({
         name: 'tournament',
-        storage: wrappedValidateAjvStorage({
-            storage: getRxStorageDexie()
-        })
+        storage: getRxStorageDexie()
     });
 
     await db.addCollections({
         players: {
-            schema: playerSchema
-        }
+            schema: playerSchema,
+            migrationStrategies: playerMigrations
+        },
+        rounds: {
+            schema: roundSchema,
+            migrationStrategies: roundMigrations
+        },
+        matches: {
+            schema: matchSchema,
+            migrationStrategies: matchMigrations
+        },
     });
 
     return db;
@@ -46,7 +57,7 @@ const _create = async () => {
 
 export async function deleteDatabase() {
     const db = await getDB();
-    const collections:Array<RxCollection> = await Object.values(db.collections);
+    const collections: Array<RxCollection> = await Object.values(db.collections);
 
     for (const collection of collections) {
         const docs = await collection.find().exec()
@@ -56,6 +67,52 @@ export async function deleteDatabase() {
     }
 }
 
+// #### RESULT FUNCTIONS
+
+// #### MATCH FUNCTIONS
+export async function addMatch(playerCount:number = 2): Promise<String> {
+    const db: RxDatabase = await getDB();
+    const UUID = crypto.randomUUID()
+    await db.players.insert({
+        id: UUID,
+        numPlayers: playerCount,
+        round: await getCurrentRound(),
+    })
+    return UUID;
+}
+
+
+// #### ROUND FUNCTIONS
+export async function hasRoundStarted(): Promise<boolean> {
+    const db: RxDatabase = await getDB();
+    const currentRound: number = await getCurrentRound();
+
+    const matchesInRound = await db.matches.find({
+        selector: {
+            round: currentRound
+        }
+    }).exec();
+
+    return matchesInRound.length > 0 ? true : false;
+}
+
+export async function getCurrentRound(): Promise<number> {
+    const db: RxDatabase = await getDB();
+    const rounds = await db.rounds.find().exec();
+    return await rounds.length;
+}
+
+export async function addRound() {
+    const db: RxDatabase = await getDB();
+    const newRound: number = 1 + await getCurrentRound();
+
+    await db.rounds.insert({
+        roundNum: newRound,
+        date: new Date().toISOString()
+    })
+}
+
+// #### PLAYER FUNCTIONS
 
 /**
  * 
@@ -76,7 +133,7 @@ export async function addPlayer(playerName: string): Promise<string> {
  * 
  * @param playerID 
  */
-export async function removePlayer(playerID:string): Promise<void> {
+export async function removePlayer(playerID: string): Promise<void> {
     const db = await getDB();
     const player = db.players.findOne(playerID);
     if (player) {
@@ -95,15 +152,20 @@ export async function getPlayers() {
 export async function getPlayerList() {
     let players = await getPlayers();
 
-    if (players.length % 2 !== 0) { 
-        players.push({id: -1, name: "Bye"});
+    if (players.length % 2 !== 0) {
+        players.push({ id: -1, name: "Bye" });
     }
     return players;
 }
 
+
+
+
+
+
 export async function dataExists(): Promise<boolean> {
     const db = await getDB();
-    const collections:Array<RxCollection> = await Object.values(db.collections);
+    const collections: Array<RxCollection> = await Object.values(db.collections);
 
     for (const collection of collections) {
         const count = await collection.count().exec()

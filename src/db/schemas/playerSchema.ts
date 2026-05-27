@@ -1,6 +1,11 @@
+export type Player = {
+    id: string;
+    name: string;
+};
+
 export const playerSchema = {
     title: 'Player',
-    version: 0,
+    version: 1,
     primaryKey: 'id',
     type: 'object',
     properties: {
@@ -14,5 +19,10 @@ export const playerSchema = {
             type: 'string',
             maxLength: 25
         }
-    }
+    },
+    required: [
+        'id',
+        'name'
+    ]
 }
+

@@ -7,7 +7,7 @@
     {#each players as player, i}
         <PlayerChoice bind:selectedPlayer={player}></PlayerChoice>
         {#if i < players.length -1}
-            <div> Vs. </div>
+            <div style={"padding: 0 1em;"}> Vs. </div>
         {/if}
     {/each}
 </div>
