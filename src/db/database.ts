@@ -131,7 +131,9 @@ export async function addMatch(playerIDs:Array<String>): Promise<String> {
 // #### ROUND FUNCTIONS
 export async function addRound() {
     const DB: RxDatabase = await getDB();
-    const newRound: number = 1 + await getCurrentRound();
+    const newRound: number = await getCurrentRound() + 1;
+
+    console.log(`newRound = ${newRound}`);
 
     await DB.rounds.insert({
         roundNum: newRound,
@@ -148,8 +150,7 @@ export async function hasRoundStarted(): Promise<boolean> {
             round: currentRound
         }
     }).exec();
-
-    return matchesInRound.length > 0 ? true : false;
+    return await matchesInRound.length > 0 ? true : false;
 }
 
 export async function getCurrentRound(): Promise<number> {

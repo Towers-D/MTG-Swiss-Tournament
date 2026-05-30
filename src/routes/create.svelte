@@ -1,17 +1,17 @@
-<script lang='ts'>
-
-    import { onMount} from "svelte";
-    import { finalisePairings, getDuplicatedPlayers, getPairedplayers, getPairings } from "../lib/create";
+<script lang="ts">
+    import { onMount } from "svelte";
+    import {
+        finalisePairings,
+        getDuplicatedPlayers,
+        getPairedplayers,
+        getPairings,
+    } from "../lib/create";
     import Match from "../components/match.svelte";
-    import { goToPage } from "../lib/utils";
     import { _ } from "ajv";
-    import { getCurrentRound } from "../db/database";
+    import { addRound, getCurrentRound, hasRoundStarted } from "../db/database";
 
-    //TODO create new round
-    //TODO get round num
-    //TODO change title and header
     //TODO Add player button
-    //TODO calc Round 1 pairings
+    //TODO drop player button
 
     let pairings: Array<Array<string>> = [];
     let nextRound = 0;
@@ -19,9 +19,15 @@
     $: duplicatedPlayers = getDuplicatedPlayers(pairings);
     $: pairedPlayers = getPairedplayers(pairings);
 
+    //TODO Stop rounds adding whenever page is entered
     onMount(async () => {
+        if (!(await hasRoundStarted())) {
+            await console.log("addRound");
+            await addRound();
+        }
+
         pairings = await getPairings();
-        const NEXT_ROUND = await getCurrentRound() + 1;
+        const NEXT_ROUND = await getCurrentRound();
         document.title = `MTG Swiss Create Round ${NEXT_ROUND}`;
         nextRound = NEXT_ROUND;
     });
@@ -32,8 +38,14 @@
 </h1>
 
 {#each pairings as pairing}
-    <Match bind:players={pairing} duplicatedPlayers={duplicatedPlayers} pairedPlayers={pairedPlayers}></Match>
+    <Match bind:players={pairing} {duplicatedPlayers} {pairedPlayers}></Match>
 {/each}
 
-<button disabled={getDuplicatedPlayers(pairings).size > 0} on:click={() => {finalisePairings(pairings)}}> Finalise Pairings </button>
-
+<button
+    disabled={getDuplicatedPlayers(pairings).size > 0}
+    on:click={() => {
+        finalisePairings(pairings);
+    }}
+>
+    Finalise Pairings
+</button>
