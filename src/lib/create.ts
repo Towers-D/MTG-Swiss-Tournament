@@ -37,7 +37,6 @@ export function getPairedplayers(pairings:Array<Array<string>>): Set<String> {
             PLAYERS.add(PLAYER);
         }
     }
-    console.log(PLAYERS)
     return PLAYERS;
 }
 

@@ -3,9 +3,13 @@
     import { getPlayerOptions, type PlayerOption } from "./playerChoice.service";
 
     export let selectedPlayer: string;
-    let options: PlayerOption[];
+    let options: PlayerOption[] = [];
     export let duplicate:boolean = false;
     export let pairedPlayers:Set<String>;
+
+    $: sortedOptions = [...options].sort((playerA, playerB) => {
+        return playerA.name.localeCompare(playerB.name);
+    });
     
     onMount(async() => {
         options = await getPlayerOptions();
@@ -20,7 +24,7 @@
 </script>
 
 <select class:duplicate bind:value={selectedPlayer}>
-    {#each options as option }
+    {#each sortedOptions as option }
         <option value = {option.id} class:missing={!pairedPlayers.has(option.id)}>
             {option.name}
             {duplicate ? "⚠️" : ""}
