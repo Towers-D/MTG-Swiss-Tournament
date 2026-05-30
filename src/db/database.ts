@@ -65,6 +65,11 @@ const _create = async () => {
 
 
 // ### Utility Functions
+async function _getNames() {
+    const DB = await getDB();
+    return await Object.keys(DB.collections);
+}
+
 async function _getDocsFromCollection(collection:MTGColllections) {
     const DB = await getDB();
     const COLLECTION = await DB.collections[collection]
@@ -74,9 +79,7 @@ async function _getDocsFromCollection(collection:MTGColllections) {
 
 async function getCollection(collection:MTGColllections) {
     const DOCS = await _getDocsFromCollection(collection);
-
-    const JSON = await DOCS.map(matches => matches.toJSON());
-    return JSON;
+    return await DOCS.map(matches => matches.toJSON());
 }
 
 export async function _logCollection(collection:MTGColllections) {
@@ -85,9 +88,7 @@ export async function _logCollection(collection:MTGColllections) {
 }
 
 export async function _deleteCollection(collection:MTGColllections) {
-    const DB = await getDB();
-    const COLLECTION = await DB.collections[collection];
-    const DOCS = await COLLECTION.find().exec();
+    const DOCS = await _getDocsFromCollection(collection)
     await DOCS.map(doc => doc.remove());
 }
 
@@ -97,19 +98,13 @@ export async function collectionHasDocs(collection:MTGColllections): Promise<boo
 }
 
 export async function deleteDatabase(): Promise<boolean> {
-    const DB = await getDB();
-    const NAMES: Array<string> = await Object.keys(DB.collections);
-
-    for (const NAME of NAMES) {
-        await _deleteCollection(NAME as MTGColllections)
-    }
+    const NAMES: Array<string> = await _getNames();
+    NAMES.map(async (name) => {await _deleteCollection(name as MTGColllections)});
     return true;
 }
 
 export async function dataExists(): Promise<boolean> {
-    const DB = await getDB();
-    const NAMES: Array<string> = await Object.keys(DB.collections);
-
+    const NAMES: Array<string> = await _getNames();
     for (const NAME of NAMES) {
         if (await collectionHasDocs(NAME as MTGColllections)) {
             return true;
