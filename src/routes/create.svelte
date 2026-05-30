@@ -40,5 +40,5 @@
     <Match bind:players={pairing} duplicatedPlayers={duplicatedPlayers} pairedPlayers={pairedPlayers}></Match>
 {/each}
 
-<button disabled={getDuplicatedPlayers(pairings).size < 0} on:click={finalisePairings} bind:this={createRound}> Finalise Pairings </button>
+<button disabled={getDuplicatedPlayers(pairings).size > 0} on:click={finalisePairings} bind:this={createRound}> Finalise Pairings </button>
 
