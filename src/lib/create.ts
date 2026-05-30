@@ -1,11 +1,7 @@
 import { shuffleArray } from "rxdb";
-import { getPlayerList } from "../db/database";
+import { getCurrentRound, getPlayerList } from "../db/database";
 import { range } from "./utils";
 import Match from "../components/match.svelte";
-
-export function setUpRound() {
-    document.title = "MTG Swiss Round";
-}
 
 export function getPairings() {
     return getRoundOnePairings();
