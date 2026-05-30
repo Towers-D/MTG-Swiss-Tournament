@@ -1,7 +1,8 @@
 <script lang='ts'>
-    import { dataExists, deleteDatabase, getPlayers, hasRoundStarted } from "../db/database";
+    import { dataExists, deleteDatabase, hasRoundStarted, _logCollection, MTGColllections, _deleteCollection, collectionHasDocs } from "../db/database";
     import { goToButton, jsonButton, setUp } from "../lib/console";
     import { onMount, tick } from "svelte";
+    import { initPlayers } from "../lib/dev/consoleDev";
 
     let hasData = false;
 
@@ -28,6 +29,31 @@
     <button id="continue" disabled={!hasData} class="consoleButton" on:click={async () => goToButton(await hasRoundStarted() ? "round" : "create")}> Continue Round </button>
     <button id="standings" disabled={!hasData} class="consoleButton" on:click={() => goToButton("standings")}> View Standings </button>
     <button id="upload" disabled={hasData} class="consoleButton" on:click={jsonButton}> Upload JSON </button>
-    <button id="view" disabled={hasData} class="consoleButton" on:click={async () =>{ await console.log(getPlayers()); await refresh();}}> Log Players </button>
-    <button id="delete" disabled={!hasData} class="consoleButton" on:click={async () =>{ await deleteDatabase(); await refresh();}}> Delete Storage </button>
+    <button id="delete" disabled={!hasData} class="consoleButton" on:click={async () =>{ if(await deleteDatabase()){ hasData = false;}}}> Delete Storage </button>
 </div>
+
+{#if import.meta.env.DEV}
+    <div id='DevButtons'>
+        <div>
+            Log: 
+            <button on:click={async () => {await _logCollection(MTGColllections.Player)}}>   Players </button>
+            <button on:click={async () => {await _logCollection(MTGColllections.Round)}}>    Rounds  </button>
+            <button on:click={async () => {await _logCollection(MTGColllections.Match)}}>    Matches </button>
+            <button disabled on:click={async () => {await _logCollection(MTGColllections.Result)}}>   Results </button>
+        </div>
+        <div>
+            Delete: 
+            <button on:click={async () => {await _deleteCollection(MTGColllections.Player)}}> Players </button>
+            <button on:click={async () => {await _deleteCollection(MTGColllections.Round)}}> Rounds </button>
+            <button on:click={async () => {await _deleteCollection(MTGColllections.Match)}}> Matches </button>
+            <button disabled on:click={async () => {await _deleteCollection(MTGColllections.Result)}}> Results </button>
+        </div>
+        <div>
+            Initialise: 
+            <button on:click={async () => {await initPlayers(); refresh()}}> Players </button>
+            <button on:click={async () => {}}> Rounds </button>
+            <button on:click={async () => {}}> Matches </button>
+            <button disabled on:click={async () => {}}> Results </button>
+        </div>
+    </div>
+{/if}

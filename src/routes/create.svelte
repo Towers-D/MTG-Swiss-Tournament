@@ -1,7 +1,7 @@
 <script lang='ts'>
 
     import { onMount} from "svelte";
-    import { getDuplicatedPlayers, getPairedplayers, getPairings } from "../lib/create";
+    import { finalisePairings, getDuplicatedPlayers, getPairedplayers, getPairings } from "../lib/create";
     import Match from "../components/match.svelte";
     import { goToPage } from "../lib/utils";
     import { _ } from "ajv";
@@ -35,5 +35,5 @@
     <Match bind:players={pairing} duplicatedPlayers={duplicatedPlayers} pairedPlayers={pairedPlayers}></Match>
 {/each}
 
-<button disabled={getDuplicatedPlayers(pairings).size > 0} on:click={() => {goToPage('round')}}> Finalise Pairings </button>
+<button disabled={getDuplicatedPlayers(pairings).size > 0} on:click={() => {finalisePairings(pairings)}}> Finalise Pairings </button>
 

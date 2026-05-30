@@ -18,6 +18,13 @@ import { roundMigrations } from './migrations/roundMigrations';
 import { matchMigrations } from './migrations/matchMigrations';
 disableWarnings();
 
+export enum MTGColllections {
+    Player = "players",
+    Round = "rounds",
+    Match = "matches",
+    Result = "results"
+} 
+
 
 export function uploadJSON(): void {
     console.log('JSON');
@@ -32,12 +39,12 @@ export async function getDB() {
 }
 
 const _create = async () => {
-    const db = await createRxDatabase({
+    const DB = await createRxDatabase({
         name: 'tournament',
         storage: getRxStorageDexie()
     });
 
-    await db.addCollections({
+    await DB.addCollections({
         players: {
             schema: playerSchema,
             migrationStrategies: playerMigrations
@@ -52,42 +59,96 @@ const _create = async () => {
         },
     });
 
-    return db;
+    return DB;
 }
 
-export async function deleteDatabase() {
-    const db = await getDB();
-    const collections: Array<RxCollection> = await Object.values(db.collections);
 
-    for (const collection of collections) {
-        const docs = await collection.find().exec()
-        await Promise.all(
-            docs.map(doc => doc.remove())
-        )
+
+// ### Utility Functions
+async function _getDocsFromCollection(collection:MTGColllections) {
+    const DB = await getDB();
+    const COLLECTION = await DB.collections[collection]
+    const DOCS = await COLLECTION.find().exec();
+    return DOCS;
+}
+
+async function getCollection(collection:MTGColllections) {
+    const DOCS = await _getDocsFromCollection(collection);
+
+    const JSON = await DOCS.map(matches => matches.toJSON());
+    return JSON;
+}
+
+export async function _logCollection(collection:MTGColllections) {
+    const JSON = await getCollection(collection);
+    console.log(JSON);
+}
+
+export async function _deleteCollection(collection:MTGColllections) {
+    const DB = await getDB();
+    const COLLECTION = await DB.collections[collection];
+    const DOCS = await COLLECTION.find().exec();
+    await DOCS.map(doc => doc.remove());
+}
+
+export async function collectionHasDocs(collection:MTGColllections): Promise<boolean> {
+    const DOCS = await _getDocsFromCollection(collection);
+    return DOCS.length > 0 ? true : false;
+}
+
+export async function deleteDatabase(): Promise<boolean> {
+    const DB = await getDB();
+    const NAMES: Array<string> = await Object.keys(DB.collections);
+
+    for (const NAME of NAMES) {
+        await _deleteCollection(NAME as MTGColllections)
     }
+    return true;
+}
+
+export async function dataExists(): Promise<boolean> {
+    const DB = await getDB();
+    const NAMES: Array<string> = await Object.keys(DB.collections);
+
+    for (const NAME of NAMES) {
+        if (await collectionHasDocs(NAME as MTGColllections)) {
+            return true;
+        }
+    }
+    return false;
 }
 
 // #### RESULT FUNCTIONS
 
 // #### MATCH FUNCTIONS
-export async function addMatch(playerCount:number = 2): Promise<String> {
-    const db: RxDatabase = await getDB();
+export async function addMatch(playerIDs:Array<String>): Promise<String> {
+    const DB: RxDatabase = await getDB();
     const UUID = crypto.randomUUID()
-    await db.players.insert({
+    await DB.matches.insert({
         id: UUID,
-        numPlayers: playerCount,
-        round: await getCurrentRound(),
+        playersInMatch: playerIDs,
+        round: await getCurrentRound() + 1,
     })
     return UUID;
 }
 
 
 // #### ROUND FUNCTIONS
+export async function addRound() {
+    const DB: RxDatabase = await getDB();
+    const newRound: number = 1 + await getCurrentRound();
+
+    await DB.rounds.insert({
+        roundNum: newRound,
+        date: new Date().toISOString()
+    })
+}
+
 export async function hasRoundStarted(): Promise<boolean> {
-    const db: RxDatabase = await getDB();
+    const DB: RxDatabase = await getDB();
     const currentRound: number = await getCurrentRound();
 
-    const matchesInRound = await db.matches.find({
+    const matchesInRound = await DB.matches.find({
         selector: {
             round: currentRound
         }
@@ -97,19 +158,9 @@ export async function hasRoundStarted(): Promise<boolean> {
 }
 
 export async function getCurrentRound(): Promise<number> {
-    const db: RxDatabase = await getDB();
-    const rounds = await db.rounds.find().exec();
+    const DB: RxDatabase = await getDB();
+    const rounds = await DB.rounds.find().exec();
     return await rounds.length;
-}
-
-export async function addRound() {
-    const db: RxDatabase = await getDB();
-    const newRound: number = 1 + await getCurrentRound();
-
-    await db.rounds.insert({
-        roundNum: newRound,
-        date: new Date().toISOString()
-    })
 }
 
 // #### PLAYER FUNCTIONS
@@ -120,9 +171,9 @@ export async function addRound() {
  * @returns a `string` that is the players UUID for use of removal
  */
 export async function addPlayer(playerName: string): Promise<string> {
-    const db = await getDB();
+    const DB = await getDB();
     const UUID = crypto.randomUUID()
-    await db.players.insert({
+    await DB.players.insert({
         id: UUID,
         name: playerName
     })
@@ -134,23 +185,15 @@ export async function addPlayer(playerName: string): Promise<string> {
  * @param playerID 
  */
 export async function removePlayer(playerID: string): Promise<void> {
-    const db = await getDB();
-    const player = db.players.findOne(playerID);
+    const DB = await getDB();
+    const player = DB.players.findOne(playerID);
     if (player) {
         await player.remove();
     }
 }
 
-export async function getPlayers() {
-    const db = await getDB();
-    const docs = await db.players.find().exec();
-
-    const players = docs.map(player => player.toJSON())
-    return players;
-}
-
 export async function getPlayerList() {
-    let players = await getPlayers();
+    let players = await getCollection(MTGColllections.Player);
 
     if (players.length % 2 !== 0) {
         players.push({ id: -1, name: "Bye" });
@@ -159,20 +202,3 @@ export async function getPlayerList() {
 }
 
 
-
-
-
-
-export async function dataExists(): Promise<boolean> {
-    const db = await getDB();
-    const collections: Array<RxCollection> = await Object.values(db.collections);
-
-    for (const collection of collections) {
-        const count = await collection.count().exec()
-        if (count > 0) {
-            return true;
-        }
-    }
-    console.log(false)
-    return false;
-}

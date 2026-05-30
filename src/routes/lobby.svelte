@@ -6,7 +6,7 @@ import PlayerTable from '../components/playerTable.svelte';
 
 import { goToPage } from "../lib/utils";
 import { sanitise } from "../lib/utils";
-    import { addPlayer, dataExists, getPlayers } from "../db/database";
+import { addPlayer, dataExists, _logCollection, MTGColllections } from "../db/database";
 
 let tableComponent: PlayerTable;
 let playerInput: HTMLInputElement;
@@ -22,7 +22,6 @@ async function passPlayer() {
     if (playerName.length > 0) {
         if (playerName.length <= 25) {
             const UUID = await addPlayer(playerName);
-            await console.log(getPlayers());
             tableComponent.addPlayer(playerName, UUID);
             playerInput.value = "";
             playerInput.focus();
@@ -47,6 +46,9 @@ onMount(async () => {
 
 <input on:keypress={keyTest} bind:this={playerInput} type="text"/>
 <button on:click={passPlayer}>Add player</button>
-<button on:click={getPlayers}>log players</button>
+
+{#if import.meta.env.DEV}
+<button on:click={async () => {await _logCollection(MTGColllections.Player)}}>log players</button>
+{/if}
 
 <PlayerTable bind:this={tableComponent} />

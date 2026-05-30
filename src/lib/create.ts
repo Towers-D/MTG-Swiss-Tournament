@@ -1,12 +1,18 @@
 import { shuffleArray } from "rxdb";
-import { getCurrentRound, getPlayerList } from "../db/database";
+import { addMatch, getCurrentRound, getPlayerList } from "../db/database";
 import { goToPage, range } from "./utils";
 import Match from "../components/match.svelte";
 
 
-export function finalisePairings(pairings:Array<Array<string>>) {
-    // make matches in database
-    goToPage('round');
+export async function finalisePairings(pairings:Array<Array<string>>) {
+    for (const PAIRING of pairings) {
+        const IDS_IN_MATCH:Array<String> = new Array<String>();
+        for (const PLAYER of PAIRING) {
+            IDS_IN_MATCH.push(PLAYER);
+        }
+        await addMatch(IDS_IN_MATCH)
+    }
+    //await goToPage('round');
 }
 
 export function getPairings() {
