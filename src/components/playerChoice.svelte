@@ -4,6 +4,8 @@
 
     export let selectedPlayer: string;
     let options: PlayerOption[];
+    export let duplicate:boolean = false;
+    export let pairedPlayers:Set<String>;
     
     onMount(async() => {
         options = await getPlayerOptions();
@@ -17,10 +19,21 @@
     })
 </script>
 
-<select bind:value={selectedPlayer}>
+<select class:duplicate bind:value={selectedPlayer}>
     {#each options as option }
-        <option value = {option.id}>
+        <option value = {option.id} class:missing={!pairedPlayers.has(option.id)}>
             {option.name}
+            {duplicate ? "⚠️" : ""}
         </option>
     {/each}
 </select>
+
+<style>
+    .duplicate {
+        border: 2px solid red;
+    }
+
+    .missing {
+        color: aquamarine;
+    }
+</style>
