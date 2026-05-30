@@ -1,6 +1,6 @@
 export type Match = {
     id: string;
-    numPlayers: number;
+    numPlayers: Array<String>;
 
     // Foreign-Key matches a roundNum
     round: string;
@@ -9,7 +9,7 @@ export type Match = {
 
 export const matchSchema = {
     title: 'Match',
-    version: 1,
+    version: 2,
     primaryKey: 'id',
     type: 'object',
     properties: {
@@ -18,10 +18,11 @@ export const matchSchema = {
             maxLength: 36,
             pattern: '^[0-9a-fA-F-]{36}$'
         },
-        numPlayers: {
+        playerInMatch: {
             type: 'number',
-            minimum: 1,
-            multipleOf: 1
+            items: {
+                type: 'string'
+            }
         },
         round: {
             type: 'number',
@@ -31,7 +32,7 @@ export const matchSchema = {
     },
     required: [
         'id',
-        'numPlayers',
+        'playersInMatch',
         'round'
     ]
 }

@@ -1,7 +1,13 @@
 import { shuffleArray } from "rxdb";
 import { getCurrentRound, getPlayerList } from "../db/database";
-import { range } from "./utils";
+import { goToPage, range } from "./utils";
 import Match from "../components/match.svelte";
+
+
+export function finalisePairings(pairings:Array<Array<string>>) {
+    // make matches in database
+    goToPage('round');
+}
 
 export function getPairings() {
     return getRoundOnePairings();
@@ -52,8 +58,6 @@ export function getDuplicatedPlayers(pairings:Array<Array<string>>): Set<String>
             (([player]) => player)
         )
     )
-
-    
 
     return DUPLICATED_PLAYERS;
 }
