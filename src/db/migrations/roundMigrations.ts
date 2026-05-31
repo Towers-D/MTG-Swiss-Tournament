@@ -1,3 +1,5 @@
 export const roundMigrations = {
-    0: (oldDoc: any) => oldDoc
+    1: function(oldDoc:any) {
+        return oldDoc;
+    }
 }

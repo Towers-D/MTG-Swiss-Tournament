@@ -1,7 +1,11 @@
 export const matchMigrations = {
-    0: (oldDoc: any) => oldDoc,
-    1: (oldDoc: any) => oldDoc,
-    2: (oldDoc: any) => {
+    1: function(oldDoc:any) {
+        return oldDoc;
+    },
+    2: function(oldDoc:any) {
+        return oldDoc;
+    },
+    3: function(oldDoc: any) {
         return {
             ...oldDoc,
             playersInMatch: []

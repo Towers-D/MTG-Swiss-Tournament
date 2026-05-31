@@ -38,9 +38,6 @@ let dbPromise: Promise<RxDatabase> | null = null;
 
 export async function getDB() {
     await indexedDB.deleteDatabase("tournament");
-    if (import.meta.env.DEV) {
-        return _create();
-    }
     if (!dbPromise) {
         dbPromise = _create();
     }
@@ -55,22 +52,10 @@ const _create = async () => {
         })
     });
 
-    console.log("MIGRATIONS", {
-        players: playerMigrations,
-        rounds: roundMigrations,
-        matches: matchMigrations
-    });
-
-    console.log(playerMigrations);
-    console.log(playerMigrations[0]);
-    console.log(typeof playerMigrations[0]);
-
     await DB.addCollections({
         players: {
             schema: playerSchema,
-            migrationStrategies: {
-                0: (oldDoc: any) => oldDoc
-            }
+            migrationStrategies: playerMigrations
         },
         rounds: {
             schema: roundSchema,
