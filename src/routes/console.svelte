@@ -1,5 +1,5 @@
 <script lang='ts'>
-    import { dataExists, deleteDatabase, hasRoundStarted, _logCollection, MTGColllections, _deleteCollection, collectionHasDocs } from "../db/database";
+    import { dataExists, deleteDatabase, isCurrentRoundEmpty, _logCollection, MTGColllections, _deleteCollection, collectionHasDocs } from "../db/database";
     import { goToButton, jsonButton, setUp } from "../lib/console";
     import { onMount, tick } from "svelte";
     import { initPlayers } from "../lib/dev/consoleDev";
@@ -26,7 +26,7 @@
 
 <div id='buttons'>
     <button id="create" disabled={hasData} class="consoleButton" on:click={() => goToButton("lobby")}> Open Lobby </button>
-    <button id="continue" disabled={!hasData} class="consoleButton" on:click={async () => goToButton(await hasRoundStarted() ? "round" : "create")}> Continue Round </button>
+    <button id="continue" disabled={!hasData} class="consoleButton" on:click={async () => goToButton(await isCurrentRoundEmpty() ? "create" : "round")}> Continue Round </button>
     <button id="standings" disabled={!hasData} class="consoleButton" on:click={() => goToButton("standings")}> View Standings </button>
     <button id="upload" disabled={hasData} class="consoleButton" on:click={jsonButton}> Upload JSON </button>
     <button id="delete" disabled={!hasData} class="consoleButton" on:click={async () =>{ if(await deleteDatabase()){ hasData = false;}}}> Delete Storage </button>

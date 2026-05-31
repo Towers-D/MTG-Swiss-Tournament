@@ -1,22 +1,27 @@
-import { addRxPlugin, createRxDatabase, isRxCollection, type RxCollection, type RxDatabase } from 'rxdb';
+import { initRxDB } from './rxdb-init';
+initRxDB()
+
+import { addRxPlugin, createRxDatabase, isRxCollection, type RxCollection, type RxDatabase, type RxDocument } from 'rxdb';
 import { getRxStorageDexie } from 'rxdb/plugins/storage-dexie';
 
-//Migration plugin for when schemas change
-import { RxDBMigrationSchemaPlugin } from 'rxdb/plugins/migration-schema';
-addRxPlugin(RxDBMigrationSchemaPlugin);
 
 //Player Collection
 import { playerSchema } from './schemas/playerSchema';
 
 //Get rid of annoying warning
 import { disableWarnings } from 'rxdb/plugins/dev-mode';
-import { wrappedValidateAjvStorage } from 'rxdb/plugins/validate-ajv';
 import { roundSchema } from './schemas/roundSchema';
 import { matchSchema } from './schemas/matchSchema';
 import { playerMigrations } from './migrations/playerMigrations';
 import { roundMigrations } from './migrations/roundMigrations';
 import { matchMigrations } from './migrations/matchMigrations';
+import { resultSchema } from './schemas/resultSchema';
+import { resultMigrations } from './migrations/resultMigrations';
 disableWarnings();
+
+
+import { wrappedValidateAjvStorage  } from 'rxdb/plugins/validate-ajv';
+
 
 export enum MTGColllections {
     Player = "players",
@@ -32,6 +37,10 @@ export function uploadJSON(): void {
 let dbPromise: Promise<RxDatabase> | null = null;
 
 export async function getDB() {
+    await indexedDB.deleteDatabase("tournament");
+    if (import.meta.env.DEV) {
+        return _create();
+    }
     if (!dbPromise) {
         dbPromise = _create();
     }
@@ -41,13 +50,27 @@ export async function getDB() {
 const _create = async () => {
     const DB = await createRxDatabase({
         name: 'tournament',
-        storage: getRxStorageDexie()
+        storage: wrappedValidateAjvStorage({
+            storage: getRxStorageDexie()
+        })
     });
+
+    console.log("MIGRATIONS", {
+        players: playerMigrations,
+        rounds: roundMigrations,
+        matches: matchMigrations
+    });
+
+    console.log(playerMigrations);
+    console.log(playerMigrations[0]);
+    console.log(typeof playerMigrations[0]);
 
     await DB.addCollections({
         players: {
             schema: playerSchema,
-            migrationStrategies: playerMigrations
+            migrationStrategies: {
+                0: (oldDoc: any) => oldDoc
+            }
         },
         rounds: {
             schema: roundSchema,
@@ -57,6 +80,10 @@ const _create = async () => {
             schema: matchSchema,
             migrationStrategies: matchMigrations
         },
+        results: {
+            schema: resultSchema,
+            migrationStrategies: resultMigrations
+        }
     });
 
     return DB;
@@ -89,7 +116,7 @@ export async function _logCollection(collection:MTGColllections) {
 
 export async function _deleteCollection(collection:MTGColllections) {
     const DOCS = await _getDocsFromCollection(collection)
-    await DOCS.map(doc => doc.remove());
+    await Promise.all(DOCS.map(doc => doc.remove()));
 }
 
 export async function collectionHasDocs(collection:MTGColllections): Promise<boolean> {
@@ -122,10 +149,21 @@ export async function addMatch(playerIDs:Array<String>): Promise<String> {
     await DB.matches.insert({
         id: UUID,
         playersInMatch: playerIDs,
-        round: await getCurrentRound() + 1,
+        round: await getCurrentRound(),
     })
     return UUID;
 }
+
+async function _countResultsInMatch(match:RxDocument): Promise<number> {
+    const DB: RxDatabase = await getDB();
+
+    return await DB.results.count({
+        selector: {
+            fk_matchID: match.primary
+        }
+    }).exec();
+}
+
 
 
 // #### ROUND FUNCTIONS
@@ -133,24 +171,54 @@ export async function addRound() {
     const DB: RxDatabase = await getDB();
     const newRound: number = await getCurrentRound() + 1;
 
-    console.log(`newRound = ${newRound}`);
-
     await DB.rounds.insert({
         roundNum: newRound,
-        date: new Date().toISOString()
+        date: new Date().toLocaleDateString()
     })
 }
 
-export async function hasRoundStarted(): Promise<boolean> {
-    const DB: RxDatabase = await getDB();
-    const currentRound: number = await getCurrentRound();
+export async function needNewRound() {
+    const ROUND_NUMBER = await getCurrentRound();
+    if (ROUND_NUMBER === 0) {
+        return true;
+    }
+    return await _roundFinished();
+}
 
-    const matchesInRound = await DB.matches.find({
+async function _roundFinished(): Promise<boolean> {
+    if (await isCurrentRoundEmpty()) {
+        return false;
+    }
+
+    const MATCHES = await _getMatchesInRound(await getCurrentRound());
+    for (const MATCH of MATCHES) {
+        const RESULTS:number = await _countResultsInMatch(MATCH);
+        const NUM_PLAYERS:number = await MATCH.get('playersInMatch').length
+
+        if (NUM_PLAYERS > RESULTS) {
+            return false;
+        }
+    }
+    return true;
+}
+
+async function _getMatchesInRound(roundNum:number) {
+    const DB: RxDatabase = await getDB();
+
+    return await DB.matches.find({
         selector: {
-            round: currentRound
+            round: roundNum
         }
     }).exec();
-    return await matchesInRound.length > 0 ? true : false;
+}
+
+export async function isCurrentRoundEmpty(): Promise<boolean> {
+    return await isRoundEmpty(await getCurrentRound());
+}
+
+export async function isRoundEmpty(roundNum:number): Promise<boolean> {
+    const matchesInRound = await _getMatchesInRound(roundNum);
+    return await matchesInRound.length === 0 ? true : false;
 }
 
 export async function getCurrentRound(): Promise<number> {

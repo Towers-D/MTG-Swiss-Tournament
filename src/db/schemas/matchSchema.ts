@@ -9,7 +9,7 @@ export type Match = {
 
 export const matchSchema = {
     title: 'Match',
-    version: 2,
+    version: 3,
     primaryKey: 'id',
     type: 'object',
     properties: {
@@ -18,8 +18,8 @@ export const matchSchema = {
             maxLength: 36,
             pattern: '^[0-9a-fA-F-]{36}$'
         },
-        playerInMatch: {
-            type: 'number',
+        playersInMatch: {
+            type: 'array',
             items: {
                 type: 'string'
             }

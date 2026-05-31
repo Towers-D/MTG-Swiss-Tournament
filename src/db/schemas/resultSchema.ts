@@ -13,10 +13,10 @@ export const resultSchema = {
     primaryKey: {
         key: 'id',
         fields: [
-            'player',
-            'match'
+            'fk_playerID',
+            'fk_matchID'
         ],
-        seperator: '|'
+        separator: '|'
     },
     type: 'object',
     properties: {

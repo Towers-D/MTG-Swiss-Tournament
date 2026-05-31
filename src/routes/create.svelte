@@ -7,8 +7,7 @@
         getPairings,
     } from "../lib/create";
     import Match from "../components/match.svelte";
-    import { _ } from "ajv";
-    import { addRound, getCurrentRound, hasRoundStarted } from "../db/database";
+    import { addRound, getCurrentRound, needNewRound } from "../db/database";
 
     //TODO Add player button
     //TODO drop player button
@@ -19,10 +18,9 @@
     $: duplicatedPlayers = getDuplicatedPlayers(pairings);
     $: pairedPlayers = getPairedplayers(pairings);
 
-    //TODO Stop rounds adding whenever page is entered
     onMount(async () => {
-        if (!(await hasRoundStarted())) {
-            await console.log("addRound");
+        await console.log(await needNewRound())
+        if (await needNewRound()) {
             await addRound();
         }
 
