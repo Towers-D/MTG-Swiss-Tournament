@@ -29,7 +29,9 @@
     <button id="continue" disabled={!hasData} class="consoleButton" on:click={async () => goToButton(await isCurrentRoundEmpty() ? "create" : "round")}> Continue Round </button>
     <button id="standings" disabled={!hasData} class="consoleButton" on:click={() => goToButton("standings")}> View Standings </button>
     <button id="upload" disabled={hasData} class="consoleButton" on:click={jsonButton}> Upload JSON </button>
-    <button id="delete" disabled={!hasData} class="consoleButton" on:click={async () =>{ if(await deleteDatabase()){ hasData = false;}}}> Delete Storage </button>
+
+    
+    <button id="delete" disabled={!hasData} class="consoleButton" on:click={async () =>{ if(await deleteDatabase()){ await refresh()}}}> Delete Storage </button>
 </div>
 
 {#if import.meta.env.DEV}
