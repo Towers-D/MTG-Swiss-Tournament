@@ -5,13 +5,13 @@ export type Round = {
 
 export const roundSchema = {
     title: 'Round',
-    version: 1,
+    version: 2,
     primaryKey: 'roundNum',
     type: 'object',
     properties: {
         roundNum: {
             type: 'string',
-            pattern: '^[0-9]{3}$',
+            pattern: '^[0-9]{1,3}$',
             maxLength: 3
         },
 

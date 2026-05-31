@@ -1,5 +1,5 @@
 import { shuffleArray } from "rxdb";
-import { addMatch, getCurrentRound, getPlayerList } from "../db/database";
+import { addMatch, getPlayerList } from "../db/database";
 import { goToPage, range } from "./utils";
 import Match from "../components/match.svelte";
 

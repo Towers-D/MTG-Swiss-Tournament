@@ -19,7 +19,6 @@
     $: pairedPlayers = getPairedplayers(pairings);
 
     onMount(async () => {
-        await console.log(await needNewRound())
         if (await needNewRound()) {
             await addRound();
         }

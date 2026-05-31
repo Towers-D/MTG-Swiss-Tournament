@@ -154,11 +154,12 @@ async function _countResultsInMatch(match:RxDocument): Promise<number> {
 // #### ROUND FUNCTIONS
 export async function addRound() {
     const DB: RxDatabase = await getDB();
-    const newRound: number = await getCurrentRound() + 1;
+    //PKs need to be strings
+    const NEW_ROUND: string = (await getCurrentRound() + 1).toString();
 
     await DB.rounds.insert({
-        roundNum: newRound,
-        date: new Date().toLocaleDateString()
+        roundNum: NEW_ROUND,
+        date: new Date().toISOString()
     })
 }
 
@@ -245,7 +246,7 @@ export async function getPlayerList() {
     let players = await getCollection(MTGColllections.Player);
 
     if (players.length % 2 !== 0) {
-        players.push({ id: -1, name: "Bye" });
+        players.push({ id: '-1', name: "Bye" });
     }
     return players;
 }
