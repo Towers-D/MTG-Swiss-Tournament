@@ -111,7 +111,7 @@ export async function collectionHasDocs(collection:MTGColllections): Promise<boo
 
 export async function deleteDatabase(): Promise<boolean> {
     const NAMES: Array<string> = await _getNames();
-    NAMES.map(async (name) => {await _deleteCollection(name as MTGColllections)});
+    await Promise.all(NAMES.map(async (name) => {await _deleteCollection(name as MTGColllections)}));
     return true;
 }
 
