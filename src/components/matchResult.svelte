@@ -1,5 +1,5 @@
 <script lang="ts">
-    import { onMount } from "svelte";
+    import { onMount, tick } from "svelte";
     import { BYE_PLAYER, LATE_PLAYER, type Player } from "../db/schemas/playerSchema";
 
     export let players: Array<Player>;
@@ -16,6 +16,8 @@
     ];
 
     onMount(() => {
+        console.log(players)
+        tick();
         switch (players[1].id) {
             case BYE_PLAYER.id:
                 selected = 1;

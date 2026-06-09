@@ -13,7 +13,8 @@
     })
 </script>
 
-<div id={match.id} class="matchContainer">
+{#if playersInMatch}
+    <div id={match.id} class="matchContainer">
     {#each playersInMatch as player, i}
         <div style="width: 5em;">{player.name}</div>
         {#if i < playersInMatch.length -1}
@@ -24,3 +25,4 @@
     <MatchResult players={playersInMatch}></MatchResult>
 </div>
 <br/>
+{/if}
