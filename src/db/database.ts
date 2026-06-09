@@ -129,15 +129,41 @@ export async function dataExists(): Promise<boolean> {
 }
 
 // #### RESULT FUNCTIONS
+export async function createResult(playerID:string, matchID:string): Promise<string> {
+    const DB: RxDatabase = await getDB();
+    const RESULT = await DB.matches.insert({
+        fk_playerID: playerID,
+        fk_matchID: matchID
+    })
+    return RESULT.id;
+}
+
+export async function updateResult(resultID:string, wins:number, losses:number) {
+    const DB = await getDB();
+    const RESULT = await DB.results.findOne(resultID).exec();
+    if (RESULT) {
+        await RESULT.patch({
+            wins: wins,
+            losses: losses
+        })
+    }
+}
+
+export async function addResult(playerID:string, matchID:string, wins:number, losses:number): Promise<String> {
+    const UUID = await createResult(playerID, matchID);
+    await updateResult(UUID, wins, losses);
+    return UUID;
+}
 
 // #### MATCH FUNCTIONS
-export async function addMatch(playerIDs:Array<String>): Promise<String> {
+export async function addMatch(playerIDs:Array<String>, round:number = -1): Promise<String> {
     const DB: RxDatabase = await getDB();
     const UUID = crypto.randomUUID()
+    const ROUND = round >= 0 ? round : await getCurrentRound()
     await DB.matches.insert({
         id: UUID,
         playersInMatch: playerIDs,
-        round: await getCurrentRound(),
+        round: ROUND,
     })
     return UUID;
 }
