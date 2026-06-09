@@ -23,7 +23,7 @@
     })
 </script>
 
-<select class:duplicate bind:value={selectedPlayer}>
+<select style="width:10em;" class:duplicate bind:value={selectedPlayer}>
     {#each sortedOptions as option }
         <option value = {option.id} class:missing={!pairedPlayers.has(option.id)}>
             {option.name}

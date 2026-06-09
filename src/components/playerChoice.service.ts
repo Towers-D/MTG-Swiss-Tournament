@@ -6,7 +6,7 @@ export type PlayerOption = {
 }
 
 export async function getPlayerOptions(): Promise<PlayerOption[]> {
-    const players = await getPlayerList();
+    const players = await getPlayerList(true);
 
     return players.map(player => ({
         id: player.id,

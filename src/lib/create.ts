@@ -1,6 +1,7 @@
 import { shuffleArray } from "rxdb";
 import { addMatch, getPlayerList } from "../db/database";
 import { goToPage, range } from "./utils";
+import { BYE_PLAYER } from "../db/schemas/playerSchema";
 
 
 export async function finalisePairings(pairings:Array<Array<string>>) {
@@ -30,10 +31,14 @@ async function getRoundOnePairings(): Promise<Array<Array<string>>> {
     for (let i = 0; i < idxs.length; i += 2) {
         const pairing = new Array<string>();
         pairing.push(playerIds[idxs[i]]);
-        pairing.push(playerIds[idxs[i+1]]);
+        if ((i+1) >= idxs.length) {
+            pairing.push(BYE_PLAYER.id)
+        } 
+        else{
+            pairing.push(playerIds[idxs[i+1]]);
+        }
         pairings.push(pairing)
     }
-
     return pairings;
 }
 

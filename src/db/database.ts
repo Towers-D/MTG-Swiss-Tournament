@@ -249,12 +249,13 @@ export async function removePlayer(playerID: string): Promise<void> {
     }
 }
 
-export async function getPlayerList() {
+export async function getPlayerList(withBye:boolean = false) {
     let players = await _getCollection(MTGColllections.Player);
 
-    if (players.length % 2 !== 0) {
+    if (withBye && players.length % 2 !== 0) {
         players.push(BYE_PLAYER);
     }
+
     return players;
 }
 
