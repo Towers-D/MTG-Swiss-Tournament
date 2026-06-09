@@ -6,7 +6,7 @@
         getPairedplayers,
         getPairings,
     } from "../lib/create";
-    import Match from "../components/match.svelte";
+    import Pairing from "../components/pairing.svelte";
     import { addRound, getCurrentRound, needNewRound } from "../db/database";
 
     //TODO Add player button
@@ -35,7 +35,7 @@
 </h1>
 
 {#each pairings as pairing}
-    <Match bind:players={pairing} {duplicatedPlayers} {pairedPlayers}></Match>
+    <Pairing bind:players={pairing} {duplicatedPlayers} {pairedPlayers}></Pairing>
 {/each}
 
 <button
