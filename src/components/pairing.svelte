@@ -5,7 +5,7 @@
     export let pairedPlayers:Set<String>
 </script>
 
-<div class="match">
+<div class="pairing">
     {#each players as player, i}
         <PlayerChoice bind:selectedPlayer={player} duplicate={duplicatedPlayers.has(player)} pairedPlayers={pairedPlayers}></PlayerChoice>
         {#if i < players.length -1}

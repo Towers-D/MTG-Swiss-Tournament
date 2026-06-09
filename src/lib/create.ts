@@ -1,7 +1,6 @@
 import { shuffleArray } from "rxdb";
 import { addMatch, getPlayerList } from "../db/database";
 import { goToPage, range } from "./utils";
-import Match from "../components/pairing.svelte";
 
 
 export async function finalisePairings(pairings:Array<Array<string>>) {

@@ -3,12 +3,12 @@ import { getRxStorageDexie } from 'rxdb/plugins/storage-dexie';
 
 
 //Player Collection
-import { playerSchema } from './schemas/playerSchema';
+import { BYE_PLAYER, LATE_PLAYER, playerSchema, type Player } from './schemas/playerSchema';
 
 //Get rid of annoying warning
 import { disableWarnings, RxDBDevModePlugin } from 'rxdb/plugins/dev-mode';
 import { roundSchema } from './schemas/roundSchema';
-import { matchSchema } from './schemas/matchSchema';
+import { matchSchema, type Match } from './schemas/matchSchema';
 import { playerMigrations } from './migrations/playerMigrations';
 import { roundMigrations } from './migrations/roundMigrations';
 import { matchMigrations } from './migrations/matchMigrations';
@@ -92,13 +92,13 @@ async function _getDocsFromCollection(collection:MTGColllections) {
     return DOCS;
 }
 
-async function getCollection(collection:MTGColllections) {
+async function _getCollection(collection:MTGColllections) {
     const DOCS = await _getDocsFromCollection(collection);
-    return await DOCS.map(matches => matches.toJSON());
+    return await DOCS.map(doc => doc.toJSON());
 }
 
 export async function _logCollection(collection:MTGColllections) {
-    const JSON = await getCollection(collection);
+    const JSON = await _getCollection(collection);
     console.log(JSON);
 }
 
@@ -152,6 +152,21 @@ async function _countResultsInMatch(match:RxDocument): Promise<number> {
     }).exec();
 }
 
+async function _getMatchesInRound(roundNum:number) {
+    const DB: RxDatabase = await getDB();
+
+    return await DB.matches.find({
+        selector: {
+            round: roundNum
+        }
+    }).exec();
+}
+
+export async function getMatchesInCurrentRound(): Promise<Array<Match>> {
+    const MATCHES_IN_ROUND = await _getMatchesInRound(await getCurrentRound());
+    return await MATCHES_IN_ROUND.map(match => match.toJSON());
+}
+
 
 
 // #### ROUND FUNCTIONS
@@ -191,16 +206,6 @@ async function _roundFinished(): Promise<boolean> {
     return true;
 }
 
-async function _getMatchesInRound(roundNum:number) {
-    const DB: RxDatabase = await getDB();
-
-    return await DB.matches.find({
-        selector: {
-            round: roundNum
-        }
-    }).exec();
-}
-
 export async function isCurrentRoundEmpty(): Promise<boolean> {
     return await isRoundEmpty(await getCurrentRound());
 }
@@ -238,20 +243,45 @@ export async function addPlayer(playerName: string): Promise<string> {
  * @param playerID 
  */
 export async function removePlayer(playerID: string): Promise<void> {
-    const DB = await getDB();
-    const player = DB.players.findOne(playerID);
+    const player = await _getPlayerDocByID(playerID);
     if (player) {
         await player.remove();
     }
 }
 
 export async function getPlayerList() {
-    let players = await getCollection(MTGColllections.Player);
+    let players = await _getCollection(MTGColllections.Player);
 
     if (players.length % 2 !== 0) {
-        players.push({ id: '-1', name: "Bye" });
+        players.push(BYE_PLAYER);
     }
     return players;
 }
 
+async function _getPlayerDocByID(playerID:string): Promise<RxDocument> {
+    const DB = await getDB();
+    return await DB.players.findOne(playerID).exec();
+}
 
+export async function getPlayerObjbyID(playerID:string): Promise<Player> {
+    switch (playerID) {
+        case '-1':
+            return BYE_PLAYER;
+        case '-2':
+            return LATE_PLAYER;
+        default:
+        const PLAYER_DOC = await _getPlayerDocByID(playerID);
+        return PLAYER_DOC.toJSON() as Player;
+    }
+}
+
+export async function getPlayersInMatch(matchID:string) {
+    const DB: RxDatabase = await getDB();
+    const MATCH = await DB.matches.findOne(matchID).exec();
+
+    const PLAYERS = new Array<Player>();
+    for (const PLAYER of MATCH.playersInMatch) {
+        PLAYERS.push(await getPlayerObjbyID(PLAYER))
+    }
+    return PLAYERS
+}
