@@ -1,6 +1,6 @@
 export type Match = {
     id: string;
-    numPlayers: Array<String>;
+    playersInMatch: Array<String>;
 
     // Foreign-Key matches a roundNum
     round: string;
