@@ -9,7 +9,7 @@ export type Result = {
 
 export const resultSchema = {
     title: 'Result',
-    version: 0,
+    version: 1,
     primaryKey: {
         key: 'id',
         fields: [
@@ -49,8 +49,6 @@ export const resultSchema = {
     required: [
         'id',
         'fk_playerID',
-        'fk_matchID',
-        'wins',
-        'losses'
+        'fk_matchID'
     ]
 }
