@@ -1,7 +1,4 @@
-import { initRxDB } from './rxdb-init';
-initRxDB()
-
-import { addRxPlugin, createRxDatabase, isRxCollection, type RxCollection, type RxDatabase, type RxDocument } from 'rxdb';
+import { addRxPlugin, createRxDatabase, type RxDatabase, type RxDocument } from 'rxdb';
 import { getRxStorageDexie } from 'rxdb/plugins/storage-dexie';
 
 
@@ -9,7 +6,7 @@ import { getRxStorageDexie } from 'rxdb/plugins/storage-dexie';
 import { playerSchema } from './schemas/playerSchema';
 
 //Get rid of annoying warning
-import { disableWarnings } from 'rxdb/plugins/dev-mode';
+import { disableWarnings, RxDBDevModePlugin } from 'rxdb/plugins/dev-mode';
 import { roundSchema } from './schemas/roundSchema';
 import { matchSchema } from './schemas/matchSchema';
 import { playerMigrations } from './migrations/playerMigrations';
@@ -21,7 +18,13 @@ disableWarnings();
 
 
 import { wrappedValidateAjvStorage  } from 'rxdb/plugins/validate-ajv';
+import { RxDBMigrationSchemaPlugin } from 'rxdb/plugins/migration-schema';
 
+//Dev mode
+addRxPlugin(RxDBMigrationSchemaPlugin);
+if (import.meta.env.DEV) {
+    addRxPlugin(RxDBDevModePlugin);
+}
 
 export enum MTGColllections {
     Player = "players",
