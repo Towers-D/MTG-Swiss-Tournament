@@ -21,6 +21,6 @@
         {/if}
     {/each}
     <br/>
-    <MatchResult></MatchResult>
+    <MatchResult players={playersInMatch}></MatchResult>
 </div>
 <br/>
