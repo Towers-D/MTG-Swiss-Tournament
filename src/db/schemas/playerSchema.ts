@@ -3,15 +3,9 @@ export type Player = {
     name: string;
 };
 
-const BYE:Player = {id: '-1', name: 'BYE'} as Player;
-const LATE:Player = {id: '-2', name: 'LATE'} as Player;
+export const BYE_PLAYER:Player = {id: '-1', name: 'BYE'} as Player;
+export const LATE_PLAYER:Player = {id: '-2', name: 'LATE'} as Player;
 
-export enum MTGColllections {
-    Player = "players",
-    Round = "rounds",
-    Match = "matches",
-    Result = "results"
-} 
 
 export const playerSchema = {
     title: 'Player',
