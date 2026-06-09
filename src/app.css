@@ -295,6 +295,10 @@ code {
   }
 }
 
-.match > * {
+.pairing > * {
+  display: inline-block;
+}
+
+.matchContainer > div {
   display: inline-block;
 }
