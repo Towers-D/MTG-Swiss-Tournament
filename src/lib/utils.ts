@@ -24,6 +24,14 @@ export function sanitise(input:string): string {
     return input.replace(REG, (match) => MAP.get(match) as string);
 }
 
+
+// Source - https://stackoverflow.com/a/5092846
+// Posted by DanS, modified by community. See post 'Timeline' for change history
+// Retrieved 2026-06-14, License - CC BY-SA 4.0
+export function randomColour() {
+    return "#" + ((Math.random() * 0xffffff) << 0).toString(16).padStart(6, "0");
+}
+
 export function goToPage(page:string = ''): void {
     push('/' + page);
 }

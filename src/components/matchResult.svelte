@@ -31,9 +31,9 @@
     })
 </script>
 
-<select bind:value={options[selected]} disabled={selected !== 3}>
+<select class:bye={selected===1} class:late={selected===5} bind:value={options[selected]} disabled={selected !== 3}>
     {#each options as option }
-        <option class:bye={selected===1} class:late={selected===5} value = {option}>
+        <option  value = {option}>
             {option}
         </option>
     {/each}

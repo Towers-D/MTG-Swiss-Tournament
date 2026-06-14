@@ -52,9 +52,10 @@ Find below a list of libraries and resources used to build this tool.
 
 ### Code Snippets Used
 
-| Function   | Locations           | Desc                    | Author    | Link                                                                         |
-|------------|---------------------|-------------------------|-----------|------------------------------------------------------------------------------|
-| `sanitise` | `manage_players.ts` | Input santisation code. | Matt Hyde | [https://stackoverflow.com/a/48226843](https://stackoverflow.com/a/48226843) |
+| Function       | Locations  | Desc                                  | Author    | Link                                                                         |
+|----------------|------------|---------------------------------------|-----------|------------------------------------------------------------------------------|
+| `sanitise`     | `utils.ts` | JavaScript string sanitising function | Matt Hyde | [https://stackoverflow.com/a/48226843](https://stackoverflow.com/a/48226843) |
+| `randomColour` | `utils.ts` | Generates random colour HexCode       | Dan S     | [https://stackoverflow.com/a/5092846](https://stackoverflow.com/a/5092846)   |
 
 ### Libraries & Tools Used
 
