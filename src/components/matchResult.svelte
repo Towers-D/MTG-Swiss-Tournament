@@ -23,7 +23,7 @@
                 selected = 1;
                 break;
             case LATE_PLAYER.id:
-                selected = -2;
+                selected = 5;
                 break;
             default:
                 break;
@@ -33,7 +33,7 @@
 
 <select bind:value={options[selected]} disabled={selected !== 3}>
     {#each options as option }
-        <option value = {option}>
+        <option class:bye={selected===1} class:late={selected===5} value = {option}>
             {option}
         </option>
     {/each}

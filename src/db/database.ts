@@ -156,7 +156,7 @@ export async function addResult(playerID:string, matchID:string, wins:number, lo
 }
 
 // #### MATCH FUNCTIONS
-export async function addMatch(playerIDs:Array<String>, round:number = -1): Promise<String> {
+export async function addMatch(playerIDs:Array<String>, round:number = -1): Promise<string> {
     const DB: RxDatabase = await getDB();
     const UUID = crypto.randomUUID()
     const ROUND = round >= 0 ? round : await getCurrentRound()
@@ -193,6 +193,15 @@ export async function getMatchesInCurrentRound(): Promise<Array<Match>> {
     return await MATCHES_IN_ROUND.map(match => match.toJSON());
 }
 
+async function _getMatchDocByID(matchID:string): Promise<RxDocument> {
+    const DB = await getDB();
+    return await DB.matches.findOne(matchID).exec();
+}
+
+export async function getMatchObjbyID(matchID:string): Promise<Match> {
+    const MATCH_DOC = await _getMatchDocByID(matchID);
+    return MATCH_DOC.toJSON() as Match;
+}
 
 
 // #### ROUND FUNCTIONS

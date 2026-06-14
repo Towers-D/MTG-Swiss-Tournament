@@ -302,3 +302,11 @@ code {
 .matchContainer > div {
   display: inline-block;
 }
+
+.bye {
+  color: greenyellow;
+}
+
+.late {
+  color: #880808;
+}

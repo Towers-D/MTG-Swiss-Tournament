@@ -9,9 +9,17 @@
     let playerInput: HTMLInputElement;
     let matches: Array<Match> = [];
 
-    function keyTest(keyEvent: KeyboardEvent): void {
+    async function keyTest(keyEvent: KeyboardEvent) {
         if (keyEvent.key === "Enter") {
-            addLateRegistration(playerInput);
+            await addAndUpdate(playerInput);
+        }
+    }
+
+    async function addAndUpdate(playerID: HTMLInputElement) {
+        const NEW_MATCH = await addLateRegistration(playerID);
+        if (NEW_MATCH) {
+            //matches.push(NEW_MATCH);
+            matches = [...matches, NEW_MATCH]
         }
     }
 
@@ -24,7 +32,7 @@
 <h1>Round {currRound}</h1>
 <div>
     <input bind:this={playerInput} />
-    <button on:click={() => {addLateRegistration(playerInput)}}>Add Late Registration</button>
+    <button on:click={() => addAndUpdate(playerInput)}>Add Late Registration</button>
 </div>
 
 {#each matches as match}
