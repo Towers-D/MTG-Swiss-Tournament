@@ -7,7 +7,7 @@ import { BYE_PLAYER, LATE_PLAYER, playerSchema, type Player } from './schemas/pl
 
 //Get rid of annoying warning
 import { disableWarnings, RxDBDevModePlugin } from 'rxdb/plugins/dev-mode';
-import { roundSchema } from './schemas/roundSchema';
+import { _convertToRoundNum, roundSchema } from './schemas/roundSchema';
 import { matchSchema, type Match } from './schemas/matchSchema';
 import { playerMigrations } from './migrations/playerMigrations';
 import { roundMigrations } from './migrations/roundMigrations';
@@ -163,7 +163,7 @@ export async function addMatch(playerIDs:Array<String>, round:number = -1): Prom
     await DB.matches.insert({
         id: UUID,
         playersInMatch: playerIDs,
-        round: ROUND,
+        round: _convertToRoundNum(ROUND),
     })
     return UUID;
 }
@@ -183,7 +183,7 @@ async function _getMatchesInRound(roundNum:number) {
 
     return await DB.matches.find({
         selector: {
-            round: roundNum
+            round: _convertToRoundNum(roundNum)
         }
     }).exec();
 }
@@ -208,10 +208,10 @@ export async function getMatchObjbyID(matchID:string): Promise<Match> {
 export async function addRound() {
     const DB: RxDatabase = await getDB();
     //PKs need to be strings
-    const NEW_ROUND: string = (await getCurrentRound() + 1).toString();
+    const NEW_ROUND: number = await getCurrentRound() + 1;
 
     await DB.rounds.insert({
-        roundNum: NEW_ROUND,
+        roundNum: _convertToRoundNum(NEW_ROUND),
         date: new Date().toISOString()
     })
 }

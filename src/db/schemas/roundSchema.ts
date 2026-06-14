@@ -3,15 +3,19 @@ export type Round = {
     date: string;
 };
 
+export function _convertToRoundNum(roundNum:number): string {
+    return roundNum.toString().padStart(3, '0')
+}
+
 export const roundSchema = {
     title: 'Round',
-    version: 2,
+    version: 4,
     primaryKey: 'roundNum',
     type: 'object',
     properties: {
         roundNum: {
             type: 'string',
-            pattern: '^[0-9]{1,3}$',
+            pattern: '^[0-9]{3}$',
             maxLength: 3
         },
 
