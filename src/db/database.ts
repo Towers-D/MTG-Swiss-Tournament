@@ -306,8 +306,10 @@ export async function getPlayerObjbyID(playerID:string): Promise<Player> {
         case '-2':
             return LATE_PLAYER;
         default:
-        const PLAYER_DOC = await _getPlayerDocByID(playerID);
-        return PLAYER_DOC.toJSON() as Player;
+            console.log(`id: ${playerID}`);
+            const PLAYER_DOC = await _getPlayerDocByID(playerID);
+            console.log(`doc: ${PLAYER_DOC}`);
+            return PLAYER_DOC.toJSON() as Player;
     }
 }
 

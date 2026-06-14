@@ -11,12 +11,12 @@
 
     async function keyTest(keyEvent: KeyboardEvent) {
         if (keyEvent.key === "Enter") {
-            await addAndUpdate(playerInput);
+            await addAndUpdate();
         }
     }
 
-    async function addAndUpdate(playerID: HTMLInputElement) {
-        const NEW_MATCH = await addLateRegistration(playerID);
+    async function addAndUpdate() {
+        const NEW_MATCH = await addLateRegistration(playerInput);
         if (NEW_MATCH) {
             //matches.push(NEW_MATCH);
             matches = [...matches, NEW_MATCH]
@@ -31,8 +31,8 @@
 
 <h1>Round {currRound}</h1>
 <div>
-    <input bind:this={playerInput} />
-    <button on:click={() => addAndUpdate(playerInput)}>Add Late Registration</button>
+    <input on:keypress={keyTest}  bind:this={playerInput} />
+    <button on:click={() => addAndUpdate()}>Add Late Registration</button>
 </div>
 
 {#each matches as match}
