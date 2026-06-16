@@ -3,12 +3,13 @@
     import { BYE_PLAYER, LATE_PLAYER, type Player } from "../db/schemas/playerSchema";
 
     export let players: Array<Player>;
-    let selected:number = 3;
+    let selected:number = 4;
 
     let options: Array<string> = [
         '2-1',
         '2-0',
         '1-0',
+        '1-1',
         '0-0',
         '0-1',
         '0-2',
@@ -22,7 +23,7 @@
                 selected = 1;
                 break;
             case LATE_PLAYER.id:
-                selected = 5;
+                selected = 6;
                 break;
             default:
                 break;
