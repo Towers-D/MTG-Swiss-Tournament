@@ -39,7 +39,7 @@
     <button id="continue" disabled={isContinueDisabled} class="consoleButton" on:click={async () => goToButton(await isCurrentRoundEmpty() ? "create" : "round")}> Continue Round </button>
     <button id="standings" disabled={isStandingsDisabled} class="consoleButton" on:click={() => goToButton("standings")}> View Standings </button>
     <button id="upload" disabled={isUploadDisabled} class="consoleButton" on:click={jsonButton}> Upload JSON </button>
-    <button id="delete" disabled={isDeleteDisabled} class="consoleButton" on:click={async () =>{ if(await deleteDatabase()){ await refresh()}}}> Delete Storage </button>
+    <button id="delete" disabled={isDeleteDisabled} class="consoleButton" on:click={async () =>{ await deleteDatabase(); await refresh()}}> Delete Storage </button>
 </div>
 
 {#if import.meta.env.DEV}

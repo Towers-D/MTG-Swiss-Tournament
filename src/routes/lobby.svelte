@@ -33,9 +33,6 @@ async function passPlayer() {
 }
 
 onMount(async () => {
-    if (await dataExists()) {
-        goToPage()
-    }
     setUpLobby();
 });
 </script>
