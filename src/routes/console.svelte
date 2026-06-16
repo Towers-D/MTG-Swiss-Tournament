@@ -1,9 +1,10 @@
 <script lang='ts'>
     import { dataExists, deleteDatabase, isCurrentRoundEmpty, _logCollection, MTGColllections, _deleteCollection, isCurrentRoundStage, advanceStage, getCurrentStageInRound} from "../db/database";
-    import { goToButton, isLobbyEnabled, jsonButton, setUp } from "../lib/console";
+    import { isLobbyEnabled, jsonButton, setUp } from "../lib/console";
     import { onMount, tick } from "svelte";
     import { initPlayers } from "../lib/dev/consoleDev";
     import { roundStage } from "../db/schemas/roundSchema";
+    import { goToPage } from "../lib/utils";
 
     let isLobbyDisabled = false;
     let isContinueDisabled = false;
@@ -35,9 +36,9 @@
 <h1>Tournament Console</h1>
 
 <div id='buttons'>
-    <button id="create" disabled={isLobbyDisabled} class="consoleButton" on:click={() => goToButton("lobby")}> Open Lobby </button>
-    <button id="continue" disabled={isContinueDisabled} class="consoleButton" on:click={async () => goToButton(await isCurrentRoundEmpty() ? "create" : "round")}> Continue Round </button>
-    <button id="standings" disabled={isStandingsDisabled} class="consoleButton" on:click={() => goToButton("standings")}> View Standings </button>
+    <button id="create" disabled={isLobbyDisabled} class="consoleButton" on:click={() => goToPage("lobby")}> Open Lobby </button>
+    <button id="continue" disabled={isContinueDisabled} class="consoleButton" on:click={async () => goToPage(await isCurrentRoundEmpty() ? "create" : "round")}> Continue Round </button>
+    <button id="standings" disabled={isStandingsDisabled} class="consoleButton" on:click={() => goToPage("standings")}> View Standings </button>
     <button id="upload" disabled={isUploadDisabled} class="consoleButton" on:click={jsonButton}> Upload JSON </button>
     <button id="delete" disabled={isDeleteDisabled} class="consoleButton" on:click={async () =>{ await deleteDatabase(); await refresh()}}> Delete Storage </button>
 </div>

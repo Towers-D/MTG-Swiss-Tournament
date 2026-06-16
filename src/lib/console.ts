@@ -2,10 +2,6 @@ import { dataExists, getCurrentRound, getCurrentStageInRound, uploadJSON } from 
 import { roundStage } from "../db/schemas/roundSchema";
 import { goToPage } from "./utils";
 
-export function goToButton(page:string): void {
-    goToPage(page);
-}
-
 export function jsonButton(): void {
     uploadJSON();
 }
