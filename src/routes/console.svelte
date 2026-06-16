@@ -37,7 +37,7 @@
 
 <div id='buttons'>
     <button id="create" disabled={isLobbyDisabled} class="consoleButton" on:click={() => goToPage("lobby")}> Open Lobby </button>
-    <button id="continue" disabled={isContinueDisabled} class="consoleButton" on:click={async () => goToPage(await isCurrentRoundEmpty() ? "create" : "round")}> Continue Round </button>
+    <button id="continue" disabled={isContinueDisabled} class="consoleButton" on:click={async () => goToPage(await getCurrentStageInRound() as roundStage)}> Continue Round </button>
     <button id="standings" disabled={isStandingsDisabled} class="consoleButton" on:click={() => goToPage("standings")}> View Standings </button>
     <button id="upload" disabled={isUploadDisabled} class="consoleButton" on:click={jsonButton}> Upload JSON </button>
     <button id="delete" disabled={isDeleteDisabled} class="consoleButton" on:click={async () =>{ await deleteDatabase(); await refresh()}}> Delete Storage </button>

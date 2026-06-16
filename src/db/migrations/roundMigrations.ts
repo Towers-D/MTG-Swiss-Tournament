@@ -28,5 +28,12 @@ export const roundMigrations = {
             oldDoc.stage = roundStage.STANDINGS;
         }
         return oldDoc;
+    },
+    //pairing needed an s
+    7: function(oldDoc:any) {
+        if (oldDoc.stage === "pairing"){
+            oldDoc.stage = roundStage.PAIRINGS;
+        }
+        return oldDoc;
     }
 }
