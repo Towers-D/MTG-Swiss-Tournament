@@ -23,6 +23,5 @@ export async function isLobbyEnabled(): Promise<boolean> {
         return true;
     }
     const CURR_STAGE:roundStage = await getCurrentStageInRound() as roundStage;
-    console.log((CURR_STAGE === roundStage.LOBBY || CURR_STAGE === roundStage.COMPLETE))
     return (CURR_STAGE === roundStage.LOBBY || CURR_STAGE === roundStage.COMPLETE);
 }
