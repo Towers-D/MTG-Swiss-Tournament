@@ -1,15 +1,31 @@
 export type Round = {
     roundNum: string;
     date: string;
+    stage: roundStage
 };
 
 export function _convertToRoundNum(roundNum:number): string {
     return roundNum.toString().padStart(3, '0')
 }
 
+export enum roundStage {
+    LOBBY = 'lobby',
+    PAIRINGS = 'pairing',
+    MATCHES = 'matches',
+    RESULTS = 'results',
+    COMPLETE = 'complete'
+}
+
+export function getNextRoundStage(currStage:roundStage): roundStage {
+    const STAGES = Object.values(roundStage);
+    const ENUM_IDX = STAGES.indexOf(currStage);
+
+    return ENUM_IDX < STAGES.length -1 ? STAGES[ENUM_IDX + 1] : roundStage.COMPLETE;
+}
+
 export const roundSchema = {
     title: 'Round',
-    version: 4,
+    version: 5,
     primaryKey: 'roundNum',
     type: 'object',
     properties: {
@@ -22,10 +38,16 @@ export const roundSchema = {
         date: {
             type: 'string',
             format: 'date-time'
+        },
+
+        stage: {
+            type: 'string',
+            enum: Object.values(roundStage)
         }
     },
     required: [
         'roundNum',
-        'date'
+        'date',
+        'stage'
     ]
 }

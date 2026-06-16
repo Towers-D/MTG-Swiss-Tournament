@@ -7,7 +7,7 @@ import { BYE_PLAYER, LATE_PLAYER, playerSchema, type Player } from './schemas/pl
 
 //Get rid of annoying warning
 import { disableWarnings, RxDBDevModePlugin } from 'rxdb/plugins/dev-mode';
-import { _convertToRoundNum, roundSchema } from './schemas/roundSchema';
+import { _convertToRoundNum, getNextRoundStage, roundSchema, roundStage } from './schemas/roundSchema';
 import { matchSchema, type Match } from './schemas/matchSchema';
 import { playerMigrations } from './migrations/playerMigrations';
 import { roundMigrations } from './migrations/roundMigrations';
@@ -19,6 +19,8 @@ disableWarnings();
 
 import { wrappedValidateAjvStorage  } from 'rxdb/plugins/validate-ajv';
 import { RxDBMigrationSchemaPlugin } from 'rxdb/plugins/migration-schema';
+import { TOURNAMENT_STAGES, tournamentSchema } from './schemas/tournamentSchema';
+import { tournamentMigrations } from './migrations/tournamentMigrations';
 
 //Dev mode
 addRxPlugin(RxDBMigrationSchemaPlugin);
@@ -56,6 +58,10 @@ const _create = async () => {
     });
 
     await DB.addCollections({
+        tournaments: {
+            schema: tournamentSchema,
+            migrationStrategies: tournamentMigrations
+        },
         players: {
             schema: playerSchema,
             migrationStrategies: playerMigrations
@@ -128,13 +134,30 @@ export async function dataExists(): Promise<boolean> {
     return false;
 }
 
+// TOURNAMENT FUNCTIONS
+async function _createTournament() {
+    const DB: RxDatabase = await getDB();
+
+    const UUID = crypto.randomUUID();
+
+    const TOURNAMENT = DB.tournaments.insert({
+        id: UUID,
+        roundsInTournament: new Array<string>(),
+        stage: TOURNAMENT_STAGES[0]
+    });
+}
+
+export async function advanceStage() {
+    
+}
+
 // #### RESULT FUNCTIONS
 export async function createResult(playerID:string, matchID:string): Promise<string> {
     const DB: RxDatabase = await getDB();
     const RESULT = await DB.matches.insert({
         fk_playerID: playerID,
         fk_matchID: matchID
-    })
+    });
     return RESULT.id;
 }
 
@@ -158,8 +181,8 @@ export async function addResult(playerID:string, matchID:string, wins:number, lo
 // #### MATCH FUNCTIONS
 export async function addMatch(playerIDs:Array<String>, round:number = -1): Promise<string> {
     const DB: RxDatabase = await getDB();
-    const UUID = crypto.randomUUID()
-    const ROUND = round >= 0 ? round : await getCurrentRound()
+    const UUID = crypto.randomUUID();
+    const ROUND = round >= 0 ? round : await getCurrentRound();
     await DB.matches.insert({
         id: UUID,
         playersInMatch: playerIDs,
@@ -212,8 +235,23 @@ export async function addRound() {
 
     await DB.rounds.insert({
         roundNum: _convertToRoundNum(NEW_ROUND),
-        date: new Date().toISOString()
+        date: new Date().toISOString(),
+        stage: roundStage.LOBBY
     })
+}
+
+export async function getCurrentStageInRound(): Promise<roundStage> {
+    const ROUND = await _getCurrentRoundDoc();
+    return await ROUND.get('stage');
+}
+
+export async function advanceCurrentRound() {
+    let round = await _getCurrentRoundDoc();
+    if (round) {
+        await round.patch({
+            stage: getNextRoundStage(round.get('stage'))
+        })
+    }
 }
 
 export async function needNewRound() {
@@ -248,6 +286,17 @@ export async function isCurrentRoundEmpty(): Promise<boolean> {
 export async function isRoundEmpty(roundNum:number): Promise<boolean> {
     const matchesInRound = await _getMatchesInRound(roundNum);
     return await matchesInRound.length === 0 ? true : false;
+}
+
+async function _getCurrentRoundDoc(): Promise<RxDocument> {
+    const DB: RxDatabase = await getDB();
+    const IDX: number = await getCurrentRoundIndex();
+    return await DB.rounds.findOne(_convertToRoundNum(IDX)).exec();
+
+}
+
+async function getCurrentRoundIndex(): Promise<number> {
+    return await getCurrentRound() -1;
 }
 
 export async function getCurrentRound(): Promise<number> {

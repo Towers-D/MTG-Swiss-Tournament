@@ -1,4 +1,4 @@
-import { _convertToRoundNum } from "../schemas/roundSchema";
+import { _convertToRoundNum, roundStage } from "../schemas/roundSchema";
 
 export const roundMigrations = {
     1: function(oldDoc:any) {
@@ -15,6 +15,10 @@ export const roundMigrations = {
     //Converts back to requiring 3 digits, to ensure ordering
     4: function(oldDoc:any) {
         oldDoc.roundNum = _convertToRoundNum(oldDoc.roundNum);
+        return oldDoc;
+    },
+    5: function(oldDoc:any) {
+        oldDoc.stage = roundStage.COMPLETE;
         return oldDoc;
     }
 }
