@@ -1,6 +1,5 @@
-import { dataExists, getCurrentRound, getCurrentStageInRound, uploadJSON } from "../db/database";
+import { getCurrentRound, getCurrentStageInRound, uploadJSON } from "../db/database";
 import { roundStage } from "../db/schemas/roundSchema";
-import { goToPage } from "./utils";
 
 export function jsonButton(): void {
     uploadJSON();
