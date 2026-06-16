@@ -3,6 +3,8 @@ export type Player = {
     name: string;
 };
 
+//TODO add DROP_PLAYER
+
 export const BYE_PLAYER:Player = {id: '-1', name: 'BYE'} as Player;
 export const LATE_PLAYER:Player = {id: '-2', name: 'LATE'} as Player;
 
