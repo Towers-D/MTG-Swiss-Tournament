@@ -6,7 +6,7 @@ import PlayerTable from '../components/playerTable.svelte';
 
 import { goToPage } from "../lib/utils";
 import { sanitise } from "../lib/utils";
-import { addPlayer, dataExists, _logCollection, MTGColllections } from "../db/database";
+import { addPlayer, dataExists, _logCollection, MTGColllections, advanceStage } from "../db/database";
 
 let tableComponent: PlayerTable;
 let playerInput: HTMLInputElement;
@@ -49,3 +49,5 @@ onMount(async () => {
 {/if}
 
 <PlayerTable bind:this={tableComponent} />
+
+<button on:click={() => {advanceStage(); goToPage('create')}}>Calculate Pairings</button>
