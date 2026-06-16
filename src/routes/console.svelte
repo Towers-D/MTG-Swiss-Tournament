@@ -66,7 +66,9 @@
             <button disabled on:click={async () => {}}> Results </button>
         </div>
         <div>
-            <button on:click={async () => {await advanceStage(); refresh();}}>Advance Stage</button>
+            Round Stage:
+            <button on:click={async () =>  {console.log(await getCurrentStageInRound())}}>Log</button>
+            <button on:click={async () => {await advanceStage(); refresh();}}>Advance</button>
         </div>
     </div>
 {/if}
