@@ -17,10 +17,12 @@ export const roundMigrations = {
         oldDoc.roundNum = _convertToRoundNum(oldDoc.roundNum);
         return oldDoc;
     },
+    //adding round stage
     5: function(oldDoc:any) {
         oldDoc.stage = roundStage.COMPLETE;
         return oldDoc;
     },
+    //Stage and page name consistency
     6: function(oldDoc:any) {
         if (oldDoc.stage === "results"){
             oldDoc.stage = roundStage.STANDINGS;
