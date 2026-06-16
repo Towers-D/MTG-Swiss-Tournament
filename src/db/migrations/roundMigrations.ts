@@ -20,5 +20,11 @@ export const roundMigrations = {
     5: function(oldDoc:any) {
         oldDoc.stage = roundStage.COMPLETE;
         return oldDoc;
+    },
+    6: function(oldDoc:any) {
+        if (oldDoc.stage === "results"){
+            oldDoc.stage = roundStage.STANDINGS;
+        }
+        return oldDoc;
     }
 }

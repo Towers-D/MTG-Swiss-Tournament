@@ -16,7 +16,6 @@
     ];
 
     onMount(() => {
-        console.log(players)
         tick();
         switch (players[1].id) {
             case BYE_PLAYER.id:

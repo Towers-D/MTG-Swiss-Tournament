@@ -5,7 +5,7 @@
         getDuplicatedPlayers,
         getPairedplayers,
         getPairings,
-    } from "../lib/create";
+    } from "../lib/pairings";
     import Pairing from "../components/pairing.svelte";
     import { addRound, getCurrentRound, needNewRound } from "../db/database";
 

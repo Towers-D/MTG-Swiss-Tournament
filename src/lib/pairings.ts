@@ -12,7 +12,7 @@ export async function finalisePairings(pairings:Array<Array<string>>) {
         }
         await addMatch(IDS_IN_MATCH)
     }
-    goToPage('round');
+    goToPage('matches');
 }
 
 export function getPairings() {

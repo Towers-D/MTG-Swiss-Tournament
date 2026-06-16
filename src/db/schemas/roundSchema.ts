@@ -12,7 +12,7 @@ export enum roundStage {
     LOBBY = 'lobby',
     PAIRINGS = 'pairing',
     MATCHES = 'matches',
-    RESULTS = 'results',
+    STANDINGS = 'standings',
     COMPLETE = 'complete'
 }
 
@@ -25,7 +25,7 @@ export function getNextRoundStage(currStage:roundStage): roundStage {
 
 export const roundSchema = {
     title: 'Round',
-    version: 5,
+    version: 6,
     primaryKey: 'roundNum',
     type: 'object',
     properties: {

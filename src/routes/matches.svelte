@@ -3,7 +3,7 @@
     import { getCurrentRound, getMatchesInCurrentRound } from "../db/database";
     import type { Match } from "../db/schemas/matchSchema";
     import MatchContainer from "../components/matchContainer.svelte";
-    import { addLateRegistration } from "../lib/round";
+    import { addLateRegistration } from "../lib/matches";
 
     let currRound = 0;
     let playerInput: HTMLInputElement;

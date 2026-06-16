@@ -9,6 +9,13 @@ export function setUp() {
     document.title = "MTG Swiss Console";
 }
 
+export async function continueRound() {
+    const ROUND_STAGE = await getCurrentStageInRound();
+    if (ROUND_STAGE === roundStage.MATCHES) {
+        
+    }
+}
+
 export async function isLobbyEnabled(): Promise<boolean> {
     const CURR_ROUND:number = await getCurrentRound();
 

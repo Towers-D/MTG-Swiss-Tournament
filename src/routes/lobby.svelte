@@ -4,8 +4,7 @@ import { setUpLobby } from "../lib/lobby";
 import { onMount } from "svelte";
 import PlayerTable from '../components/playerTable.svelte';
 
-import { goToPage } from "../lib/utils";
-import { sanitise } from "../lib/utils";
+import { goToPage, sanitise } from "../lib/utils";
 import { addPlayer, dataExists, _logCollection, MTGColllections, advanceStage } from "../db/database";
 
 let tableComponent: PlayerTable;
@@ -50,4 +49,4 @@ onMount(async () => {
 
 <PlayerTable bind:this={tableComponent} />
 
-<button on:click={() => {advanceStage(); goToPage('create')}}>Calculate Pairings</button>
+<button on:click={() => {advanceStage(); goToPage('pairings')}}>Calculate Pairings</button>
