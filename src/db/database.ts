@@ -148,7 +148,13 @@ async function _createTournament() {
 }
 
 export async function advanceStage() {
-    
+    const ROUND = await _getCurrentRoundDoc();
+    if (ROUND) {
+        const NEXT_STAGE = await getNextRoundStage(await getCurrentStageInRound() as roundStage);
+        await ROUND.patch({
+            stage: NEXT_STAGE
+        })
+    }
 }
 
 // #### RESULT FUNCTIONS
