@@ -15,7 +15,7 @@
 
 
     async function refresh() {
-        isLobbyDisabled = await !isLobbyEnabled();
+        isLobbyDisabled = !(await isLobbyEnabled());
         isContinueDisabled = !(await isCurrentRoundStage(roundStage.MATCHES) || await isCurrentRoundStage(roundStage.PAIRINGS));
         isStandingsDisabled = true;
         isUploadDisabled = await dataExists();
