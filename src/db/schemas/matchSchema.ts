@@ -9,7 +9,7 @@ export type Match = {
 
 export const matchSchema = {
     title: 'Match',
-    version: 3,
+    version: 4,
     primaryKey: 'id',
     type: 'object',
     properties: {
@@ -25,10 +25,10 @@ export const matchSchema = {
             }
         },
         round: {
-            type: 'number',
-            minimum: 1,
-            multipleOf: 1
-        }
+            type: 'string',
+            pattern: '^[0-9]{3}$',
+            maxLength: 3
+        },
     },
     required: [
         'id',

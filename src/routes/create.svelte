@@ -19,14 +19,10 @@
     $: pairedPlayers = getPairedplayers(pairings);
 
     onMount(async () => {
-        if (await needNewRound()) {
-            await addRound();
-        }
 
         pairings = await getPairings();
-        const NEXT_ROUND = await getCurrentRound();
-        document.title = `MTG Swiss Create Round ${NEXT_ROUND}`;
-        nextRound = NEXT_ROUND;
+        nextRound = await getCurrentRound();
+        document.title = `MTG Swiss Create Round ${nextRound}`;
     });
 </script>
 
