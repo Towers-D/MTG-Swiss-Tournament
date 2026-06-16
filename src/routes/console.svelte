@@ -1,35 +1,31 @@
 <script lang='ts'>
-    import { dataExists, deleteDatabase, isCurrentRoundEmpty, _logCollection, MTGColllections, _deleteCollection} from "../db/database";
+    import { dataExists, deleteDatabase, isCurrentRoundEmpty, _logCollection, MTGColllections, _deleteCollection, isCurrentRoundStage} from "../db/database";
     import { goToButton, isLobbyEnabled, jsonButton, setUp } from "../lib/console";
     import { onMount, tick } from "svelte";
     import { initPlayers } from "../lib/dev/consoleDev";
+    import { roundStage } from "../db/schemas/roundSchema";
 
-    let hasData = false;
+    let isLobbyDisabled = false;
+    let isContinueDisabled = false;
+    let isStandingsDisabled = false;
+    let isUploadDisabled = false;
+    let isDeleteDisabled = false;
 
-    let lobbyActive = $state(false);
 
-    $effect(() => {
-        isLobbyEnabled().then(value => {
-            lobbyActive = value
-        })
-    })
 
     async function refresh() {
-        hasData = await dataExists()
+        isLobbyDisabled = await isLobbyEnabled();
+        isContinueDisabled = await (isCurrentRoundStage(roundStage.MATCHES) || isCurrentRoundStage(roundStage.PAIRINGS));
+        isStandingsDisabled = true;
+        isUploadDisabled = await dataExists();
+        isDeleteDisabled = !isUploadDisabled;
     }
-    /**
-     * If empty round doesn't exist
-     * 
-     * 
-     * 
-    */
 
     onMount(async () => {
         setUp();
 
         //I dont think this is actually necessary but is here to make sure bind is ready
         await tick();
-
         await refresh();
     });
 
@@ -39,13 +35,11 @@
 <h1>Tournament Console</h1>
 
 <div id='buttons'>
-    <button id="create" disabled={async() => {await isLobbyEnabled()}} class="consoleButton" on:click={() => goToButton("lobby")}> Open Lobby </button>
-    <button id="continue" disabled={!hasData} class="consoleButton" on:click={async () => goToButton(await isCurrentRoundEmpty() ? "create" : "round")}> Continue Round </button>
-    <button id="standings" disabled={!hasData} class="consoleButton" on:click={() => goToButton("standings")}> View Standings </button>
-    <button id="upload" disabled={hasData} class="consoleButton" on:click={jsonButton}> Upload JSON </button>
-
-    
-    <button id="delete" disabled={!hasData} class="consoleButton" on:click={async () =>{ if(await deleteDatabase()){ await refresh()}}}> Delete Storage </button>
+    <button id="create" disabled={isLobbyDisabled} class="consoleButton" on:click={() => goToButton("lobby")}> Open Lobby </button>
+    <button id="continue" disabled={isContinueDisabled} class="consoleButton" on:click={async () => goToButton(await isCurrentRoundEmpty() ? "create" : "round")}> Continue Round </button>
+    <button id="standings" disabled={isStandingsDisabled} class="consoleButton" on:click={() => goToButton("standings")}> View Standings </button>
+    <button id="upload" disabled={isUploadDisabled} class="consoleButton" on:click={jsonButton}> Upload JSON </button>
+    <button id="delete" disabled={isDeleteDisabled} class="consoleButton" on:click={async () =>{ if(await deleteDatabase()){ await refresh()}}}> Delete Storage </button>
 </div>
 
 {#if import.meta.env.DEV}

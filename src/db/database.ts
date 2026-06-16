@@ -240,9 +240,12 @@ export async function addRound() {
     })
 }
 
-export async function getCurrentStageInRound(): Promise<roundStage> {
+export async function getCurrentStageInRound(): Promise<roundStage|null> {
     const ROUND = await _getCurrentRoundDoc();
-    return await ROUND.get('stage');
+    if (ROUND) {
+        return await ROUND.get('stage');
+    }
+    return null;
 }
 
 export async function advanceCurrentRound() {
@@ -252,6 +255,11 @@ export async function advanceCurrentRound() {
             stage: getNextRoundStage(round.get('stage'))
         })
     }
+}
+
+export async function isCurrentRoundStage(checkStage:roundStage): Promise<boolean> {
+    return (await getCurrentStageInRound() === checkStage) ? true : false;
+
 }
 
 export async function needNewRound() {
@@ -290,14 +298,14 @@ export async function isRoundEmpty(roundNum:number): Promise<boolean> {
 
 async function _getCurrentRoundDoc(): Promise<RxDocument> {
     const DB: RxDatabase = await getDB();
-    const IDX: number = await getCurrentRoundIndex();
+    const IDX: number = await getCurrentRound();
     return await DB.rounds.findOne(_convertToRoundNum(IDX)).exec();
 
 }
 
-async function getCurrentRoundIndex(): Promise<number> {
-    return await getCurrentRound() -1;
-}
+// async function getCurrentRoundIndex(): Promise<number> {
+//     return await getCurrentRound() -1;
+// }
 
 export async function getCurrentRound(): Promise<number> {
     const DB: RxDatabase = await getDB();

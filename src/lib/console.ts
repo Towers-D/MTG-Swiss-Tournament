@@ -1,4 +1,4 @@
-import { getCurrentRound, getCurrentStageInRound, uploadJSON } from "../db/database";
+import { dataExists, getCurrentRound, getCurrentStageInRound, uploadJSON } from "../db/database";
 import { roundStage } from "../db/schemas/roundSchema";
 import { goToPage } from "./utils";
 
@@ -22,7 +22,6 @@ export async function isLobbyEnabled(): Promise<boolean> {
     if (CURR_ROUND === 0) {
         return true;
     }
-    const CURR_STAGE:roundStage = await getCurrentStageInRound();
-    
+    const CURR_STAGE:roundStage = await getCurrentStageInRound() as roundStage;
     return (CURR_STAGE === roundStage.LOBBY || CURR_STAGE === roundStage.COMPLETE) ? true : false;
 }
