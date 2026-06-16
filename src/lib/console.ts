@@ -4,17 +4,14 @@ import { goToPage } from "./utils";
 
 export function goToButton(page:string): void {
     goToPage(page);
-    //resetButtons();
 }
 
 export function jsonButton(): void {
     uploadJSON();
-    //resetButtons();
 }
 
 export function setUp() {
     document.title = "MTG Swiss Console";
-    //resetButtons();
 }
 
 export async function isLobbyEnabled(): Promise<boolean> {

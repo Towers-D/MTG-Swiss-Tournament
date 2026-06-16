@@ -1,5 +1,5 @@
 <script lang='ts'>
-    import { dataExists, deleteDatabase, isCurrentRoundEmpty, _logCollection, MTGColllections, _deleteCollection, isCurrentRoundStage} from "../db/database";
+    import { dataExists, deleteDatabase, isCurrentRoundEmpty, _logCollection, MTGColllections, _deleteCollection, isCurrentRoundStage, advanceStage, getCurrentStageInRound} from "../db/database";
     import { goToButton, isLobbyEnabled, jsonButton, setUp } from "../lib/console";
     import { onMount, tick } from "svelte";
     import { initPlayers } from "../lib/dev/consoleDev";
@@ -14,8 +14,8 @@
 
 
     async function refresh() {
-        isLobbyDisabled = await isLobbyEnabled();
-        isContinueDisabled = await (isCurrentRoundStage(roundStage.MATCHES) || isCurrentRoundStage(roundStage.PAIRINGS));
+        isLobbyDisabled = await !isLobbyEnabled();
+        isContinueDisabled = !(await isCurrentRoundStage(roundStage.MATCHES) || await isCurrentRoundStage(roundStage.PAIRINGS));
         isStandingsDisabled = true;
         isUploadDisabled = await dataExists();
         isDeleteDisabled = !isUploadDisabled;
@@ -64,6 +64,9 @@
             <button on:click={async () => {}}> Rounds </button>
             <button on:click={async () => {}}> Matches </button>
             <button disabled on:click={async () => {}}> Results </button>
+        </div>
+        <div>
+            <button on:click={async () => {await advanceStage(); refresh();}}>Advance Stage</button>
         </div>
     </div>
 {/if}
