@@ -1,5 +1,5 @@
 <script lang='ts'>
-    import { dataExists, deleteDatabase, isCurrentRoundEmpty, _logCollection, MTGColllections, _deleteCollection, isCurrentRoundStage, advanceStage, getCurrentStageInRound} from "../db/database";
+    import { dataExists, deleteDatabase, isCurrentRoundEmpty, _logCollection, MTGColllections, _deleteCollection, isCurrentRoundStage, getCurrentStageInRound, advanceCurrentRound} from "../db/database";
     import { isLobbyEnabled, jsonButton, setUp } from "../lib/console";
     import { onMount, tick } from "svelte";
     import { initPlayers } from "../lib/dev/consoleDev";
@@ -69,7 +69,7 @@
         <div>
             Round Stage:
             <button on:click={async () =>  {console.log(await getCurrentStageInRound())}}>Log</button>
-            <button on:click={async () => {await advanceStage(); refresh();}}>Advance</button>
+            <button on:click={async () => {await advanceCurrentRound(); refresh();}}>Advance</button>
         </div>
     </div>
 {/if}

@@ -7,7 +7,7 @@
         getPairings,
     } from "../lib/pairings";
     import Pairing from "../components/pairing.svelte";
-    import { addRound, getCurrentRound, needNewRound } from "../db/database";
+    import { addRound, advanceCurrentRound, getCurrentRound, needNewRound } from "../db/database";
 
     //TODO Add player button
     //TODO drop player button
@@ -38,6 +38,7 @@
     disabled={getDuplicatedPlayers(pairings).size > 0}
     on:click={() => {
         finalisePairings(pairings);
+        advanceCurrentRound();
     }}
 >
     Finalise Pairings
