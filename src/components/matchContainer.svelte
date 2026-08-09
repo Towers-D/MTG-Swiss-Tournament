@@ -15,7 +15,7 @@
 </script>
 
 {#if playersInMatch}
-    <div style="color: {randomColour()};" id={match.id} class="matchContainer">
+    <div style="color: {match.colour};" id={match.id} class="matchContainer">
         {#each playersInMatch as player, i}
             <div
                 class:bye={player.id === "-1"}

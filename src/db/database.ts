@@ -21,6 +21,7 @@ import { wrappedValidateAjvStorage  } from 'rxdb/plugins/validate-ajv';
 import { RxDBMigrationSchemaPlugin } from 'rxdb/plugins/migration-schema';
 import { TOURNAMENT_STAGES, tournamentSchema } from './schemas/tournamentSchema';
 import { tournamentMigrations } from './migrations/tournamentMigrations';
+import { randomColour } from '../lib/utils';
 
 //Dev mode
 addRxPlugin(RxDBMigrationSchemaPlugin);
@@ -184,6 +185,7 @@ export async function addMatch(playerIDs:Array<String>, round:number = -1): Prom
         id: UUID,
         playersInMatch: playerIDs,
         round: _convertToRoundNum(ROUND),
+        colour: randomColour(),
     })
     return UUID;
 }

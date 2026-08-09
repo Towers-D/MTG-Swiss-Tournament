@@ -4,12 +4,12 @@ export type Match = {
 
     // Foreign-Key matches a roundNum
     round: string;
-    
+    colour: string;
 };
 
 export const matchSchema = {
     title: 'Match',
-    version: 4,
+    version: 6,
     primaryKey: 'id',
     type: 'object',
     properties: {
@@ -29,6 +29,11 @@ export const matchSchema = {
             pattern: '^[0-9]{3}$',
             maxLength: 3
         },
+        colour: {
+            type: 'string',
+            pattern: '#[a-fA-F0-9]{6}',
+            maxLength: 7
+        }
     },
     required: [
         'id',

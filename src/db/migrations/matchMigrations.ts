@@ -1,3 +1,4 @@
+import { randomColour } from "../../lib/utils";
 import { _convertToRoundNum } from "../schemas/roundSchema";
 
 export const matchMigrations = {
@@ -17,6 +18,14 @@ export const matchMigrations = {
     //Accept the new Round ID
     4: function(oldDoc: any) {
         oldDoc.round = _convertToRoundNum(oldDoc.round);
+        return oldDoc;
+    },
+    5: function(oldDoc: any) {
+        oldDoc.colour = randomColour();
+        return oldDoc;
+    },
+    // Error for saving too early of something
+    6: function(oldDoc: any) {
         return oldDoc;
     }
 }
