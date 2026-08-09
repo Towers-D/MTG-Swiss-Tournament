@@ -4,6 +4,7 @@
 
     export let players: Array<Player>;
     let selected:number = 4;
+    let fixedMatch:boolean = false;
 
     let options: Array<string> = [
         '2-1',
@@ -21,9 +22,11 @@
         switch (players[1].id) {
             case BYE_PLAYER.id:
                 selected = 1;
+                fixedMatch = true;
                 break;
             case LATE_PLAYER.id:
                 selected = 6;
+                fixedMatch = true;
                 break;
             default:
                 break;
@@ -31,7 +34,7 @@
     })
 </script>
 
-<select class:bye={selected===1} class:late={selected===5} bind:value={options[selected]} disabled={selected !== 3}>
+<select class:bye={selected===1} class:late={selected===5} bind:value={options[selected]} disabled={fixedMatch}>
     {#each options as option }
         <option  value = {option}>
             {option}
