@@ -18,7 +18,8 @@
     "rxjs": "^7.8.2",
     "svelte-app-router": "^3.0.7",
     "svelte-spa-router": "^5.1.0",
-    "tabulator-tables": "^6.4.0"
+    "tabulator-tables": "^6.4.0",
+    "yarn": "^1.22.22"
   },
   "devDependencies": {
     "@sveltejs/vite-plugin-svelte": "^7.1.2",
@@ -33,5 +34,8 @@
     "typescript": "~6.0.2",
     "vite": "^8.0.12",
     "vitest": "^4.1.6"
+  },
+  "allowScripts": {
+    "yarn@1.22.22": true
   }
 }
